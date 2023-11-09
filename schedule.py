@@ -24,6 +24,7 @@ worksheet = spreadsheet.sheet1
 # Get the value of cell A1
 sunday_value = worksheet.acell('A1').value
 
+
 # Get the current year
 current_year = datetime.now().year
 
@@ -55,10 +56,10 @@ class Store_Run:
 
 def process_employee(employee_name):
     # Convert employee_name to uppercase
-    employee_name = employee_name.upper()
+    # employee_name = employee_name.upper()
 
     # Find all occurrences of employee_name in column 2
-    cell_list = worksheet.findall(employee_name, in_column=2)
+    cell_list = worksheet.findall(employee_name, in_column=18)
 
     # Iterate through each occurrence
     for cell in cell_list:
@@ -68,27 +69,37 @@ def process_employee(employee_name):
 
         # Step 2: Move up one cell at a time until a link is found
         current_cell = cell
+
+        # Add the any notes next to name
+        note = worksheet.cell(current_cell.row, current_cell.col + 1).value
+        # Remove new line characters
+        if note:
+            note = note.replace("\n", " ")
+
         while current_cell.row > 1:
-            current_cell = worksheet.cell(current_cell.row - 1, 2)
+            current_cell = worksheet.cell(current_cell.row - 1, 18)
 
             # Check if the content of the cell is not None and is a hyperlink
             if current_cell.value and re.match(r'^https?://', current_cell.value):
-                store_link = current_cell.value
+                store_link = current_cell.value.replace("\n", " ")
                 break
 
         if store_link:
             # Step 3: Move up once cell above the link and set that as the store_address
-            store_address = worksheet.cell(current_cell.row - 1, 2).value
+            store_address = worksheet.cell(
+                current_cell.row - 1, 18).value.replace("\n", " ")
 
             # Step 4: Move up one cell from the store_address and set that cell as the store_name
-            store_name = worksheet.cell(current_cell.row - 2, 2).value
+            store_name = worksheet.cell(
+                current_cell.row - 2, 18).value.replace("\n", " ")
 
             # Step 5: Move one cell up from the store_name and set that cell as the inv_type
-            inv_type = worksheet.cell(current_cell.row - 3, 2).value
+            inv_type = worksheet.cell(
+                current_cell.row - 3, 18).value.replace("\n", " ")
 
             # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
             while current_cell.row > 1:
-                current_cell = worksheet.cell(current_cell.row - 1, 2)
+                current_cell = worksheet.cell(current_cell.row - 1, 18)
                 cell_value = current_cell.value
                 # Check for HH:MM format
                 if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
@@ -96,22 +107,24 @@ def process_employee(employee_name):
                     break
                 elif cell_value and re.match(r'^https?://', cell_value):
                     # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
-                    store_link = cell_value
+                    store_link = cell_value.replace("\n", " ")
                     store_address = worksheet.cell(
-                        current_cell.row - 1, 2).value
-                    store_name = worksheet.cell(current_cell.row - 2, 2).value
-                    inv_type = worksheet.cell(current_cell.row - 3, 2).value
+                        current_cell.row - 1, 18).value.replace("\n", " ")
+                    store_name = worksheet.cell(
+                        current_cell.row - 2, 18).value.replace("\n", " ")
+                    inv_type = worksheet.cell(
+                        current_cell.row - 3, 18).value.replace("\n", " ")
 
         # Step 7: Move up one cell from the start_time and set it to the meet_time
         if start_time:
-            meet_time = worksheet.cell(current_cell.row - 1, 2).value
+            meet_time = worksheet.cell(current_cell.row - 1, 18).value
         else:
             meet_time = None
 
         # Create an instance of the Store_Run class
         store_run_instance = Store_Run(
-            meet_time, start_time, inv_type, store_name, store_address, store_link, 'Note')
+            meet_time, start_time, inv_type, store_name, store_address, store_link, note)
         print(store_run_instance.__dict__)
 
 
-process_employee('Dj')
+process_employee('Lashaun')
