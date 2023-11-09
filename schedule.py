@@ -54,12 +54,12 @@ class Store_Run:
         self.note = note
 
 
-def process_employee(employee_name):
+def process_employee(employee_name, column_number):
     # Convert employee_name to uppercase
     # employee_name = employee_name.upper()
 
     # Find all occurrences of employee_name in column 2
-    cell_list = worksheet.findall(employee_name, in_column=18)
+    cell_list = worksheet.findall(employee_name, in_column=column_number)
 
     # Iterate through each occurrence
     for cell in cell_list:
@@ -77,7 +77,7 @@ def process_employee(employee_name):
             note = note.replace("\n", " ")
 
         while current_cell.row > 1:
-            current_cell = worksheet.cell(current_cell.row - 1, 18)
+            current_cell = worksheet.cell(current_cell.row - 1, column_number)
 
             # Check if the content of the cell is not None and is a hyperlink
             if current_cell.value and re.match(r'^https?://', current_cell.value):
@@ -87,19 +87,20 @@ def process_employee(employee_name):
         if store_link:
             # Step 3: Move up once cell above the link and set that as the store_address
             store_address = worksheet.cell(
-                current_cell.row - 1, 18).value.replace("\n", " ")
+                current_cell.row - 1, column_number).value.replace("\n", " ")
 
             # Step 4: Move up one cell from the store_address and set that cell as the store_name
             store_name = worksheet.cell(
-                current_cell.row - 2, 18).value.replace("\n", " ")
+                current_cell.row - 2, column_number).value.replace("\n", " ")
 
             # Step 5: Move one cell up from the store_name and set that cell as the inv_type
             inv_type = worksheet.cell(
-                current_cell.row - 3, 18).value.replace("\n", " ")
+                current_cell.row - 3, column_number).value.replace("\n", " ")
 
             # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
             while current_cell.row > 1:
-                current_cell = worksheet.cell(current_cell.row - 1, 18)
+                current_cell = worksheet.cell(
+                    current_cell.row - 1, column_number)
                 cell_value = current_cell.value
                 # Check for HH:MM format
                 if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
@@ -109,15 +110,16 @@ def process_employee(employee_name):
                     # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
                     store_link = cell_value.replace("\n", " ")
                     store_address = worksheet.cell(
-                        current_cell.row - 1, 18).value.replace("\n", " ")
+                        current_cell.row - 1, column_number).value.replace("\n", " ")
                     store_name = worksheet.cell(
-                        current_cell.row - 2, 18).value.replace("\n", " ")
+                        current_cell.row - 2, column_number).value.replace("\n", " ")
                     inv_type = worksheet.cell(
-                        current_cell.row - 3, 18).value.replace("\n", " ")
+                        current_cell.row - 3, column_number).value.replace("\n", " ")
 
         # Step 7: Move up one cell from the start_time and set it to the meet_time
         if start_time:
-            meet_time = worksheet.cell(current_cell.row - 1, 18).value
+            meet_time = worksheet.cell(
+                current_cell.row - 1, column_number).value
         else:
             meet_time = None
 
@@ -127,4 +129,6 @@ def process_employee(employee_name):
         print(store_run_instance.__dict__)
 
 
-process_employee('Lashaun')
+columns_to_process = [2, 6, 10, 14, 18, 22, 26]
+for column in columns_to_process:
+    process_employee('Lashaun', column)
