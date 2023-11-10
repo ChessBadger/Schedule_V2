@@ -3,10 +3,6 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta
 import re
 import json
-import pandas as pd
-import openpyxl
-from openpyxl import load_workbook
-from openpyxl import Workbook
 import time
 
 # Load credentials from a JSON file
@@ -44,6 +40,10 @@ for i in range(1, 7):
     days_of_week.append(next_day.strftime('%a, %b %d'))
     # ['Sun, Nov 05', 'Mon, Nov 06', 'Tue, Nov 07', 'Wed, Nov 08', 'Thu, Nov 09', 'Fri, Nov 10', 'Sat, Nov 11']
 
+# Create a dictionary with the days of the week as keys and empty lists as values
+schedule = {day: [] for day in days_of_week}
+print(schedule)
+
 
 class Store_Run:
     # Constructor (initializer) method
@@ -57,7 +57,7 @@ class Store_Run:
         self.note = note
 
 
-def process_employee(employee_name, column_number):
+def process_employee(employee_name, column_number, counter):
     # # Convert employee_name to uppercase
     # employee_name = employee_name.upper
 
@@ -84,7 +84,6 @@ def process_employee(employee_name, column_number):
             while current_cell.row > 1:
                 current_cell = worksheet.cell(
                     current_cell.row - 1, column_number)
-                print(current_cell.value)
                 # Check if the content of the cell is not None and contains the word "OFFICE"
                 if current_cell.value and "OFFICE" in current_cell.value.upper():
                     store_link = current_cell.value.replace("\n", " ")
@@ -141,22 +140,40 @@ def process_employee(employee_name, column_number):
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
                 meet_time, start_time, inv_type, store_name, store_address, store_link, note)
-            print(store_run_instance.__dict__)
+
+            # Append the data to the respective day's entry in the schedule_data dictionary
+            schedule[days_of_week[counter]
+                     ].append(store_run_instance.__dict__)
+            print(schedule)
+
+            # print(store_run_instance.__dict__)
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
             print(f"Rate limit exceeded. Waiting and retrying...")
-            time.sleep(60)  # Sleep for 1 minute (adjust as needed)
+            time.sleep(100)  # Sleep for 1 minute (adjust as needed)
             # Retry the operation
             process_employee(employee_name, column_number)
         else:
             # Handle other API errors
             print(f"API Error: {api_error}")
-    # except Exception as e:
-    #     # Handle other exceptions
-    #     print(f"An unexpected error occurred: {e}")
+    except Exception as e:
+        # Handle other exceptions
+        print(f"An unexpected error occurred: {e}")
 
 
-columns_to_process = [6]
+employee_name = 'Lashaun'
+
+# Set which columns to check for employee names
+columns_to_process = [2, 6, 10, 14, 18, 22, 26]
+counter = 0
+
+# Iterate through each column
 for column in columns_to_process:
-    process_employee('Lashaun', column)
+    try:
+        process_employee(employee_name, column, counter)
+        counter += 1
+    except gspread.exceptions.CellNotFound:
+        print(f"{employee_name} not found in column {column}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
