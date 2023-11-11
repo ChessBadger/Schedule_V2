@@ -40,6 +40,7 @@ for i in range(1, 7):
     days_of_week.append(next_day.strftime('%a, %b %d'))
     # ['Sun, Nov 05', 'Mon, Nov 06', 'Tue, Nov 07', 'Wed, Nov 08', 'Thu, Nov 09', 'Fri, Nov 10', 'Sat, Nov 11']
 
+
 # Create a dictionary with the days of the week as keys and empty lists as values
 schedule = {day: [] for day in days_of_week}
 
@@ -134,7 +135,7 @@ def process_employee(employee_name, column_number, counter):
                 meet_time = worksheet.cell(
                     current_cell.row - 1, column_number).value
             else:
-                meet_time = None
+                meet_time = "None"
 
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
@@ -143,12 +144,12 @@ def process_employee(employee_name, column_number, counter):
             # Append the data to the respective day's entry in the schedule_data dictionary
             schedule[days_of_week[counter]
                      ].append(store_run_instance.__dict__)
-            print(schedule)
+            print(days_of_week[counter], "Done")
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
             print(f"Rate limit exceeded. Waiting and retrying...")
-            time.sleep(120)  # Sleep for 1 minute (adjust as needed)
+            time.sleep(240)  # Sleep for 1 minute (adjust as needed)
             # Retry the operation
             process_employee(employee_name, column_number, counter)
         else:
@@ -157,6 +158,12 @@ def process_employee(employee_name, column_number, counter):
     except Exception as e:
         # Handle other exceptions
         print(f"An unexpected error occurred: {e}")
+
+
+# Update the schedule data in a JSON file after each successful API call
+def update_schedule_json(schedule):
+    with open('schedule_data.json', 'w') as json_file:
+        json.dump(schedule, json_file)
 
 
 employee_name = 'Lashaun'
@@ -170,7 +177,13 @@ for column in columns_to_process:
     try:
         process_employee(employee_name, column, counter)
         counter += 1
+        # Update JSON after each successful API call
+        update_schedule_json(schedule)
     except gspread.exceptions.CellNotFound:
         print(f"{employee_name} not found in column {column}")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+# If needed, update JSON after all iterations
+update_schedule_json(schedule)

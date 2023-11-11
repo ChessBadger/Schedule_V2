@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Schedule</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Schedule</h1>
+    <div id="scheduleData"></div>
+
+    <script>
+      fetch('schedule_data.json') // Fetch the JSON file
+        .then((response) => response.json())
+        .then((schedule) => {
+          const scheduleData = document.getElementById('scheduleData');
+
+          for (const [day, runs] of Object.entries(schedule)) {
+            const dayElement = document.createElement('div');
+            const dayHeader = document.createElement('h3');
+            dayHeader.textContent = day;
+            dayElement.appendChild(dayHeader);
+
+            runs.forEach((run) => {
+              const card = document.createElement('div');
+              card.classList.add('card');
+
+              card.innerHTML = `
+                <p><strong>Meet Time:</strong> ${run.meet_time}</p>
+                <p><strong>Start Time:</strong> ${run.start_time}</p>
+                <p><strong>Inventory Type:</strong> ${run.inv_type}</p>
+                <p><strong>Store Name:</strong> ${run.store_name}</p>
+                <p><strong>Store Address:</strong> ${run.store_address}</p>
+                <p><strong>Store Link:</strong> <a href="${run.store_link}">${run.store_link}</a></p>
+                <p><strong>Note:</strong> ${run.note}</p>
+              `;
+
+              dayElement.appendChild(card);
+            });
+
+            scheduleData.appendChild(dayElement);
+          }
+        })
+        .catch((error) => console.error('Error fetching the schedule:', error));
+    </script>
+  </body>
+</html>
