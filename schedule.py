@@ -149,7 +149,7 @@ def process_employee(employee_name, column_number, counter):
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
             print(f"Rate limit exceeded. Waiting and retrying...")
-            time.sleep(240)  # Sleep for 1 minute (adjust as needed)
+            time.sleep(60)  # Sleep for 1 minute (adjust as needed)
             # Retry the operation
             process_employee(employee_name, column_number, counter)
         else:
