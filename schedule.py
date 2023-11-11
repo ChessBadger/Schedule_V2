@@ -42,7 +42,6 @@ for i in range(1, 7):
 
 # Create a dictionary with the days of the week as keys and empty lists as values
 schedule = {day: [] for day in days_of_week}
-print(schedule)
 
 
 class Store_Run:
@@ -146,14 +145,12 @@ def process_employee(employee_name, column_number, counter):
                      ].append(store_run_instance.__dict__)
             print(schedule)
 
-            # print(store_run_instance.__dict__)
-
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
             print(f"Rate limit exceeded. Waiting and retrying...")
-            time.sleep(100)  # Sleep for 1 minute (adjust as needed)
+            time.sleep(120)  # Sleep for 1 minute (adjust as needed)
             # Retry the operation
-            process_employee(employee_name, column_number)
+            process_employee(employee_name, column_number, counter)
         else:
             # Handle other API errors
             print(f"API Error: {api_error}")
