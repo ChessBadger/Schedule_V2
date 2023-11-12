@@ -100,7 +100,7 @@ a:hover {
 }
 
 /* For devices with a maximum width of 767px (typical mobile devices) */
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   /* Adjustments for mobile devices */
 
   /* Example: Making the schedule container full width on mobile */
