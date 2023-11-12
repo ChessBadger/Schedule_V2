@@ -93,10 +93,10 @@ def process_employee(employee_name, column_number, counter):
                     current_cell.row - 1, column_number)
                 # Check if the content of the cell is not None and contains the word "OFFICE"
                 if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
-                    store_link.append("https://goo.gl/maps/QkUNdCfmSrz")
+                    store_link.append(current_cell.value.replace("\n", " "))
                     store_name.append(current_cell.value.replace("\n", " "))
-                    store_address.append(current_cell.value.replace("\n", " "))
-                    inv_type.append(" ")
+                    store_address.append("None")
+                    inv_type.append("None")
                     start_time = "None"
                     meet_time = "None"
                     break
@@ -146,7 +146,7 @@ def process_employee(employee_name, column_number, counter):
                 else:
                     meet_time = "NO MEET TIME"
             else:
-                meet_time = "NO MEET TIMEe"
+                meet_time = "NO MEET TIME"
 
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
@@ -177,7 +177,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Katherine'
+employee_name = 'Lashaun'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 24]
