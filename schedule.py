@@ -93,7 +93,6 @@ def process_employee(employee_name, column_number, counter):
                     inv_type.append("None")
                     start_time = "None"
                     meet_time = "None"
-                    print("office found")
                     break
                 # Check if the content of the cell is not None and is a hyperlink
                 elif current_cell.value and re.match(r'^https?://', current_cell.value):
