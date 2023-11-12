@@ -68,9 +68,10 @@ def process_employee(employee_name, column_number, counter):
 
         # Iterate through each occurrence
         for cell in cell_list:
-            # Initialize variables for each iteration
-            store_link = None
-            start_time = None
+            store_link = []
+            store_address = []
+            store_name = []
+            inv_type = []
 
             # Step 2: Move up one cell at a time until a link is found
             current_cell = cell
@@ -85,31 +86,33 @@ def process_employee(employee_name, column_number, counter):
                 current_cell = worksheet.cell(
                     current_cell.row - 1, column_number)
                 # Check if the content of the cell is not None and contains the word "OFFICE"
-                if current_cell.value and "OFFICE" in current_cell.value.upper():
-                    store_link = current_cell.value.replace("\n", " ")
-                    store_name = current_cell.value.replace("\n", " ")
-                    store_address = "None"
-                    inv_type = "None"
+                if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
+                    store_link.append(current_cell.value.replace("\n", " "))
+                    store_name.append(current_cell.value.replace("\n", " "))
+                    store_address.append("None")
+                    inv_type.append("None")
                     start_time = "None"
                     meet_time = "None"
+                    print("office found")
                     break
                 # Check if the content of the cell is not None and is a hyperlink
                 elif current_cell.value and re.match(r'^https?://', current_cell.value):
-                    store_link = current_cell.value.replace("\n", " ")
+                    print("link found")
+                    store_link.append(current_cell.value.replace("\n", " "))
                     break
 
-            if store_link and "OFFICE" not in store_link.upper():
+            if store_link and "OFFICE" not in store_link[0].upper():
                 # Step 3: Move up once cell above the link and set that as the store_address
-                store_address = worksheet.cell(
-                    current_cell.row - 1, column_number).value.replace("\n", " ")
+                store_address.append(worksheet.cell(
+                    current_cell.row - 1, column_number).value.replace("\n", " "))
 
                 # Step 4: Move up one cell from the store_address and set that cell as the store_name
-                store_name = worksheet.cell(
-                    current_cell.row - 2, column_number).value.replace("\n", " ")
+                store_name.append(worksheet.cell(
+                    current_cell.row - 2, column_number).value.replace("\n", " "))
 
                 # Step 5: Move one cell up from the store_name and set that cell as the inv_type
-                inv_type = worksheet.cell(
-                    current_cell.row - 3, column_number).value.replace("\n", " ")
+                inv_type.append(worksheet.cell(
+                    current_cell.row - 3, column_number).value.replace("\n", " "))
 
                 # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
                 while current_cell.row > 1:
@@ -120,15 +123,18 @@ def process_employee(employee_name, column_number, counter):
                     if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
                         start_time = cell_value.strip()
                         break
-                    elif cell_value and re.match(r'^https?://', cell_value):
+                    elif current_cell.value and re.match(r'^https?://', current_cell.value):
+
                         # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
-                        store_link = cell_value.replace("\n", " ")
-                        store_address = worksheet.cell(
-                            current_cell.row - 1, column_number).value.replace("\n", " ")
-                        store_name = worksheet.cell(
-                            current_cell.row - 2, column_number).value.replace("\n", " ")
-                        inv_type = worksheet.cell(
-                            current_cell.row - 3, column_number).value.replace("\n", " ")
+                        store_link.append(cell_value.replace("\n", " "))
+                        store_address.append(worksheet.cell(
+                            current_cell.row - 1, column_number).value.replace("\n", " "))
+                        store_name.append(worksheet.cell(
+                            current_cell.row - 2, column_number).value.replace("\n", " "))
+                        inv_type.append(worksheet.cell(
+                            current_cell.row - 3, column_number).value.replace("\n", " "))
+                        print("true", store_link, store_address,
+                              store_name, inv_type)
 
             # Step 7: Move up one cell from the start_time and set it to the meet_time
             if start_time:
@@ -144,7 +150,7 @@ def process_employee(employee_name, column_number, counter):
             # Append the data to the respective day's entry in the schedule_data dictionary
             schedule[days_of_week[counter]
                      ].append(store_run_instance.__dict__)
-            print(days_of_week[counter], "Done")
+            # print(days_of_week[counter], "Done")
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
@@ -166,10 +172,10 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = 'Katherine'
 
 # Set which columns to check for employee names
-columns_to_process = [2, 6, 10, 14, 18, 22, 26]
+columns_to_process = [6]
 counter = 0
 
 # Iterate through each column
