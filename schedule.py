@@ -5,6 +5,7 @@ import re
 import json
 import time
 
+
 # Load credentials from a JSON file
 with open('config.json') as config_file:
     credentials = json.load(config_file)
@@ -17,6 +18,7 @@ client = gspread.authorize(creds)
 
 # Open the Google Sheets document by its title
 spreadsheet = client.open('Week1')
+
 
 # Select the worksheet by title
 worksheet = spreadsheet.sheet1

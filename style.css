@@ -56,6 +56,11 @@ h3 {
   font-size: 1.5em;
 }
 
+h4 {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
 /* Link styles */
 a {
   color: #007bff;
@@ -66,4 +71,36 @@ a {
 a:hover {
   text-decoration: underline;
   color: #0056b3;
+}
+
+/* For devices with a maximum width of 767px (typical mobile devices) */
+@media (max-width: 900px) {
+  /* Adjustments for mobile devices */
+
+  /* Example: Making the schedule container full width on mobile */
+  #scheduleData {
+    max-width: 100%; /* Adjust to fit the screen width */
+    border-radius: 0; /* Remove border radius for full-width look */
+  }
+
+  /* Example: Adjusting card styles for mobile */
+  .card {
+    margin-bottom: 20px; /* Further increase space on mobile */
+    margin-top: 20px; /* Further increase space on mobile */
+    overflow: hidden; /* or overflow: auto; */
+  }
+
+  .store-card {
+    /* Existing styles for mobile */
+    overflow: hidden; /* or overflow: auto; */
+  }
+
+  /* Example: Heading styles for mobile */
+  h1 {
+    font-size: 1.8em; /* Decrease font size for better fit */
+  }
+
+  h3 {
+    font-size: 1.2em; /* Decrease font size for better fit */
+  }
 }

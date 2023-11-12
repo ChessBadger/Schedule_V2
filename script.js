@@ -18,18 +18,37 @@ fetch('schedule_data.json')
             const storeCard = document.createElement('div');
             storeCard.classList.add('store-card');
 
-            displayItem('Store Name', run.store_name[index], storeCard);
-            displayItem('Store Address', run.store_address[index], storeCard);
-            displayItem('Inventory Type', run.inv_type[index], storeCard);
-            displayItem('Store Link', `<a href="${run.store_link[index]}">${run.store_link[index]}</a>`, storeCard);
-
+            displayName(run.store_name[index], storeCard);
+            // displayRunItem('Store Address', run.store_address[index], storeCard);
+            displayStoreItem(run.inv_type[index], storeCard);
+            displayLink(run.store_address[index], run.store_link[index], storeCard);
             card.appendChild(storeCard);
           });
         };
 
-        const displayItem = (label, value, container) => {
+        const displayRunItem = (label, value, container) => {
           const item = document.createElement('p');
           item.innerHTML = `<strong>${label}:</strong> ${value}`;
+          container.appendChild(item);
+        };
+
+        const displayLink = (label, value, container) => {
+          const item = document.createElement('a');
+          item.textContent = label;
+          item.setAttribute('href', value); // Set the href attribute to make the link clickable
+          item.setAttribute('target', '_blank'); // Set the link to open in a new tab
+          container.appendChild(item);
+        };
+
+        const displayName = (value, container) => {
+          const item = document.createElement('h4');
+          item.textContent = value;
+          container.appendChild(item);
+        };
+
+        const displayStoreItem = (value, container) => {
+          const item = document.createElement('p');
+          item.textContent = value;
           container.appendChild(item);
         };
 
@@ -41,15 +60,15 @@ fetch('schedule_data.json')
               mainCard.innerHTML = ''; // Clear the card before displaying
 
               if (showAll) {
-                displayItem('Meet Time', run.meet_time, mainCard);
-                displayItem('Start Time', run.start_time, mainCard);
-                displayItem('Note', run.note, mainCard);
+                displayRunItem('Meet Time', run.meet_time, mainCard);
+                displayRunItem('Start Time', run.start_time, mainCard);
+                displayRunItem('Note', run.note, mainCard);
                 showAll = false;
                 toggleButton.textContent = 'Show All Stores';
               } else {
-                displayItem('Meet Time', run.meet_time, mainCard);
-                displayItem('Start Time', run.start_time, mainCard);
-                displayItem('Note', run.note, mainCard);
+                displayRunItem('Meet Time', run.meet_time, mainCard);
+                displayRunItem('Start Time', run.start_time, mainCard);
+                displayRunItem('Note', run.note, mainCard);
                 displayAllStores(run, mainCard);
                 showAll = true;
                 toggleButton.textContent = 'Show Less';
@@ -63,9 +82,9 @@ fetch('schedule_data.json')
           }
         };
 
-        displayItem('Meet Time', run.meet_time, mainCard);
-        displayItem('Start Time', run.start_time, mainCard);
-        displayItem('Note', run.note, mainCard);
+        displayRunItem('Meet Time', run.meet_time, mainCard);
+        displayRunItem('Start Time', run.start_time, mainCard);
+        displayRunItem('Note', run.note, mainCard);
 
         let showAll = false; // Flag to toggle between displaying all stores and just the first
 
