@@ -10,47 +10,61 @@ fetch('schedule_data.json')
       dayElement.appendChild(dayHeader);
 
       runs.forEach((run) => {
-        const card = document.createElement('div');
-        card.classList.add('card');
+        const mainCard = document.createElement('div');
+        mainCard.classList.add('card');
 
-        const displayItem = (label, value) => {
-          const item = document.createElement('p');
-          item.innerHTML = `<strong>${label}:</strong> ${value}`;
-          card.appendChild(item);
+        const displayAllStores = (run, card) => {
+          run.store_name.forEach((store, index) => {
+            const storeCard = document.createElement('div');
+            storeCard.classList.add('store-card');
+
+            displayItem('Store Name', run.store_name[index], storeCard);
+            displayItem('Store Address', run.store_address[index], storeCard);
+            displayItem('Inventory Type', run.inv_type[index], storeCard);
+            displayItem('Store Link', `<a href="${run.store_link[index]}">${run.store_link[index]}</a>`, storeCard);
+
+            card.appendChild(storeCard);
+          });
         };
 
-        // Display the first item of each list
-        displayItem('Meet Time', run.meet_time);
-        displayItem('Start Time', run.start_time);
-        displayItem('Inventory Type', run.inv_type[0]);
-        displayItem('Store Name', run.store_name[0]);
-        displayItem('Store Address', run.store_address[0]);
-        displayItem('Store Link', `<a href="${run.store_link[0]}">${run.store_link[0]}</a>`);
-        displayItem('Note', run.note);
+        const displayItem = (label, value, container) => {
+          const item = document.createElement('p');
+          item.innerHTML = `<strong>${label}:</strong> ${value}`;
+          container.appendChild(item);
+        };
 
-        dayElement.appendChild(card);
+        displayItem('Meet Time', run.meet_time, mainCard);
+        displayItem('Start Time', run.start_time, mainCard);
+        displayItem('Note', run.note, mainCard);
+        displayItem('Store Name', run.store_name[0], mainCard);
+        displayItem('Store Address', run.store_address[0], mainCard);
+        displayItem('Inventory Type', run.inv_type[0], mainCard);
+        displayItem('Store Link', `<a href="${run.store_link[0]}">${run.store_link[0]}</a>`, mainCard);
 
-        // If there are multiple items, create a button to cycle through them
-        if (run.store_name.length > 1) {
-          const button = document.createElement('button');
-          button.textContent = 'Next Store';
-          let index = 1; // Start with the second item
-          button.addEventListener('click', () => {
-            displayItem('Store Name', run.store_name[index]);
-            displayItem('Store Address', run.store_address[index]);
-            displayItem('Inventory Type', run.inv_type[index]);
-            displayItem('Store Link', `<a href="${run.store_link[index]}">${run.store_link[index]}</a>`);
-            index = (index + 1) % run.store_name.length; // Loop through the items
+        dayElement.appendChild(mainCard);
 
-            // Hide the button when reaching the last item
-            if (index === 0) {
-              button.style.display = 'none';
-            } else {
-              button.style.display = 'block'; // Ensure it's visible for other items
-            }
-          });
-          card.appendChild(button);
-        }
+        let showAll = false; // Flag to toggle between displaying all stores and just the first
+
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = 'Show All Stores';
+        toggleButton.addEventListener('click', () => {
+          mainCard.innerHTML = ''; // Clear the card before displaying
+
+          if (showAll) {
+            displayItem('Meet Time', run.meet_time, mainCard);
+            displayItem('Start Time', run.start_time, mainCard);
+            displayItem('Note', run.note, mainCard);
+            showAll = false;
+            toggleButton.textContent = 'Show All Stores';
+          } else {
+            displayAllStores(run, mainCard);
+            showAll = true;
+            toggleButton.textContent = 'Show Less';
+          }
+          mainCard.appendChild(toggleButton); // Ensure the button remains in the card
+        });
+
+        mainCard.appendChild(toggleButton);
       });
 
       scheduleData.appendChild(dayElement);

@@ -97,7 +97,6 @@ def process_employee(employee_name, column_number, counter):
                     break
                 # Check if the content of the cell is not None and is a hyperlink
                 elif current_cell.value and re.match(r'^https?://', current_cell.value):
-                    print("link found")
                     store_link.append(current_cell.value.replace("\n", " "))
                     break
 
@@ -133,8 +132,6 @@ def process_employee(employee_name, column_number, counter):
                             current_cell.row - 2, column_number).value.replace("\n", " "))
                         inv_type.append(worksheet.cell(
                             current_cell.row - 3, column_number).value.replace("\n", " "))
-                        print("true", store_link, store_address,
-                              store_name, inv_type)
 
             # Step 7: Move up one cell from the start_time and set it to the meet_time
             if start_time:
@@ -150,7 +147,7 @@ def process_employee(employee_name, column_number, counter):
             # Append the data to the respective day's entry in the schedule_data dictionary
             schedule[days_of_week[counter]
                      ].append(store_run_instance.__dict__)
-            # print(days_of_week[counter], "Done")
+            print(days_of_week[counter], "Done")
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
@@ -172,10 +169,10 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Katherine'
+employee_name = 'DJ'
 
 # Set which columns to check for employee names
-columns_to_process = [6]
+columns_to_process = [2, 6, 10, 14, 18, 22, 24]
 counter = 0
 
 # Iterate through each column
