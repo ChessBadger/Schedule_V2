@@ -79,7 +79,11 @@ def process_employee(employee_name, column_number, counter):
             current_cell = cell
 
             # Add the any notes next to name
-            note = worksheet.cell(current_cell.row, current_cell.col + 1).value
+            if worksheet.cell(current_cell.row, current_cell.col + 1).value:
+                note = worksheet.cell(
+                    current_cell.row, current_cell.col + 1).value
+            else:
+                note = "None"
             # Remove new line characters
             if note:
                 note = note.replace("\n", " ")
@@ -89,10 +93,10 @@ def process_employee(employee_name, column_number, counter):
                     current_cell.row - 1, column_number)
                 # Check if the content of the cell is not None and contains the word "OFFICE"
                 if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
-                    store_link.append(current_cell.value.replace("\n", " "))
+                    store_link.append("https://goo.gl/maps/QkUNdCfmSrz")
                     store_name.append(current_cell.value.replace("\n", " "))
-                    store_address.append("None")
-                    inv_type.append("None")
+                    store_address.append(current_cell.value.replace("\n", " "))
+                    inv_type.append(" ")
                     start_time = "None"
                     meet_time = "None"
                     break
@@ -136,10 +140,13 @@ def process_employee(employee_name, column_number, counter):
 
             # Step 7: Move up one cell from the start_time and set it to the meet_time
             if start_time:
-                meet_time = worksheet.cell(
-                    current_cell.row - 1, column_number).value
+                if worksheet.cell(current_cell.row - 1, column_number).value:
+                    meet_time = worksheet.cell(
+                        current_cell.row - 1, column_number).value
+                else:
+                    meet_time = "NO MEET TIME"
             else:
-                meet_time = "None"
+                meet_time = "NO MEET TIMEe"
 
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
@@ -170,7 +177,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = 'Katherine'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 24]
