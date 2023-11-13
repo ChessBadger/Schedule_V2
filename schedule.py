@@ -206,7 +206,7 @@ def update_schedule_json(schedule):
 employee_name = 'Lincoln'
 
 # Set which columns to check for employee names
-columns_to_process = [18]
+columns_to_process = [2, 6, 10, 14, 18, 22, 26]
 counter = 0
 
 # Iterate through each column

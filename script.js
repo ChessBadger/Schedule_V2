@@ -51,7 +51,7 @@ fetch('schedule_data.json')
           container.appendChild(item);
         };
 
-        const displayStoreCrew = (crew, container) => {
+        const displayStoreCrew = (crew, container, isDriver) => {
           const crewList = document.createElement('ul');
           crewList.style.listStyle = 'none'; // Removes bullets
           crewList.style.display = 'none'; // Initially hide crew list
@@ -66,24 +66,26 @@ fetch('schedule_data.json')
           item.appendChild(crewList);
           container.appendChild(item);
 
-          const buttonContainer = document.createElement('div');
-          buttonContainer.style.display = 'flex'; // Use Flexbox for positioning
-          buttonContainer.style.justifyContent = 'flex-end'; // Align button to the right
+          if (isDriver) {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex'; // Use Flexbox for positioning
+            buttonContainer.style.justifyContent = 'flex-end'; // Align button to the right
 
-          const toggleButton = document.createElement('button');
-          toggleButton.textContent = 'Toggle Crew';
-          toggleButton.addEventListener('click', () => {
-            if (crewList.style.display === 'none') {
-              crewList.style.display = 'block';
-              toggleButton.textContent = 'Hide Crew';
-            } else {
-              crewList.style.display = 'none';
-              toggleButton.textContent = 'Show Crew';
-            }
-          });
+            const toggleButton = document.createElement('button');
+            toggleButton.textContent = 'Toggle Crew';
+            toggleButton.addEventListener('click', () => {
+              if (crewList.style.display === 'none') {
+                crewList.style.display = 'block';
+                toggleButton.textContent = 'Hide Crew';
+              } else {
+                crewList.style.display = 'none';
+                toggleButton.textContent = 'Show Crew';
+              }
+            });
 
-          buttonContainer.appendChild(toggleButton);
-          container.appendChild(buttonContainer);
+            buttonContainer.appendChild(toggleButton);
+            container.appendChild(buttonContainer);
+          }
         };
 
         const displayCarLogo = (isDriver, container) => {
@@ -112,7 +114,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
-                displayStoreCrew(run.store_crew, mainCard);
+                displayStoreCrew(run.store_crew, mainCard, run.is_driver);
                 displayCarLogo(run.is_driver, mainCard);
 
                 showAll = false;
@@ -121,7 +123,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
-                displayStoreCrew(run.store_crew, mainCard);
+                displayStoreCrew(run.store_crew, mainCard, run.is_driver);
                 displayCarLogo(run.is_driver, mainCard);
 
                 displayAllStores(run, mainCard);
@@ -141,7 +143,7 @@ fetch('schedule_data.json')
         displayRunItem('Meet Time', run.meet_time, mainCard);
         displayRunItem('Start Time', run.start_time, mainCard);
         displayRunItem('Note', run.note, mainCard);
-        displayStoreCrew(run.store_crew, mainCard);
+        displayStoreCrew(run.store_crew, mainCard, run.is_driver);
         displayCarLogo(run.is_driver, mainCard);
 
         let showAll = false; // Flag to toggle between displaying all stores and just the first
