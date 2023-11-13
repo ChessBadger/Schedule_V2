@@ -102,20 +102,20 @@ def process_employee(employee_name, column_number, counter):
                     break
                 # Check if the content of the cell is not None and is a hyperlink
                 elif current_cell.value and re.match(r'^https?://', current_cell.value):
-                    store_link.append(current_cell.value.replace("\n", " "))
+                    store_link.insert(0, current_cell.value.replace("\n", " "))
                     break
 
             if store_link and "OFFICE" not in store_link[0].upper():
                 # Step 3: Move up once cell above the link and set that as the store_address
-                store_address.append(worksheet.cell(
+                store_address.insert(0, worksheet.cell(
                     current_cell.row - 1, column_number).value.replace("\n", " "))
 
                 # Step 4: Move up one cell from the store_address and set that cell as the store_name
-                store_name.append(worksheet.cell(
+                store_name.insert(0, worksheet.cell(
                     current_cell.row - 2, column_number).value.replace("\n", " "))
 
                 # Step 5: Move one cell up from the store_name and set that cell as the inv_type
-                inv_type.append(worksheet.cell(
+                inv_type.insert(0, worksheet.cell(
                     current_cell.row - 3, column_number).value.replace("\n", " "))
 
                 # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
@@ -130,12 +130,12 @@ def process_employee(employee_name, column_number, counter):
                     elif current_cell.value and re.match(r'^https?://', current_cell.value):
 
                         # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
-                        store_link.append(cell_value.replace("\n", " "))
-                        store_address.append(worksheet.cell(
+                        store_link.insert(0, cell_value.replace("\n", " "))
+                        store_address.insert(0, worksheet.cell(
                             current_cell.row - 1, column_number).value.replace("\n", " "))
-                        store_name.append(worksheet.cell(
+                        store_name.insert(0, worksheet.cell(
                             current_cell.row - 2, column_number).value.replace("\n", " "))
-                        inv_type.append(worksheet.cell(
+                        inv_type.insert(0, worksheet.cell(
                             current_cell.row - 3, column_number).value.replace("\n", " "))
 
             # Step 7: Move up one cell from the start_time and set it to the meet_time
@@ -177,7 +177,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = 'Katherine'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 24]
