@@ -49,7 +49,7 @@ schedule = {day: [] for day in days_of_week}
 
 class Store_Run:
     # Constructor (initializer) method
-    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note):
+    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, is_driver):
         self.meet_time = meet_time
         self.start_time = start_time
         self.inv_type = inv_type
@@ -57,6 +57,8 @@ class Store_Run:
         self.store_address = store_address
         self.store_link = store_link
         self.note = note
+        self.store_crew = store_crew
+        self.is_driver = is_driver
 
 
 def process_employee(employee_name, column_number, counter):
@@ -65,6 +67,7 @@ def process_employee(employee_name, column_number, counter):
 
     try:
 
+        is_driver = False
         # Find all occurrences of employee_name in column 2
         cell_list = worksheet.findall(employee_name, in_column=column_number)
 
@@ -74,6 +77,7 @@ def process_employee(employee_name, column_number, counter):
             store_address = []
             store_name = []
             inv_type = []
+            store_crew = []
 
             # Step 2: Move up one cell at a time until a link is found
             current_cell = cell
@@ -82,6 +86,9 @@ def process_employee(employee_name, column_number, counter):
             if worksheet.cell(current_cell.row, current_cell.col + 1).value:
                 note = worksheet.cell(
                     current_cell.row, current_cell.col + 1).value
+                if "DRIVER" in note.upper():
+                    is_driver = True
+
             else:
                 note = "None"
             # Remove new line characters
@@ -128,7 +135,6 @@ def process_employee(employee_name, column_number, counter):
                         start_time = cell_value.strip()
                         break
                     elif current_cell.value and re.match(r'^https?://', current_cell.value):
-
                         # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
                         store_link.insert(0, cell_value.replace("\n", " "))
                         store_address.insert(0, worksheet.cell(
@@ -148,9 +154,29 @@ def process_employee(employee_name, column_number, counter):
             else:
                 meet_time = "NO MEET TIME"
 
+            if "NO MEET TIME" in meet_time:
+                print("")
+            # Step 8: Display crew if "DRIVER" is in the note
+            elif is_driver:
+                current_cell = cell
+                while current_cell.row > 1:
+                    current_cell = worksheet.cell(
+                        current_cell.row - 1, column_number - 1)
+                    if "1)" in current_cell.value:
+                        current_cell = worksheet.cell(
+                            current_cell.row, column_number + 1)
+                        break
+                while current_cell.row < 200:
+                    current_cell = worksheet.cell(
+                        current_cell.row + 1, column_number)
+                    if current_cell.value:
+                        store_crew.append(current_cell.value)
+                    else:
+                        break
+
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
-                meet_time, start_time, inv_type, store_name, store_address, store_link, note)
+                meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, is_driver)
 
             # Append the data to the respective day's entry in the schedule_data dictionary
             schedule[days_of_week[counter]
@@ -177,10 +203,10 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = 'Lincoln'
 
 # Set which columns to check for employee names
-columns_to_process = [2, 6, 10, 14, 18, 22, 24]
+columns_to_process = [18]
 counter = 0
 
 # Iterate through each column
