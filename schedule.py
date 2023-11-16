@@ -23,7 +23,7 @@ spreadsheet = client.open('Week1')
 # Select the worksheet by title
 worksheet = spreadsheet.sheet1
 
-# Get the value of cell A1
+# Get the value of cell A16
 sunday_value = worksheet.acell('A1').value
 
 # Get the current year
@@ -92,6 +92,8 @@ def process_employee(employee_name, column_number, counter):
                 # Check if the note contains the word "DRIVER"
                 if "DRIVER" in note.upper():
                     is_driver = True
+            else:
+                note = "None"
 
             # Check the employee is supervisor
             if "1)" in worksheet.cell(current_cell.row, current_cell.col - 1).value:
@@ -99,8 +101,6 @@ def process_employee(employee_name, column_number, counter):
                 store_supervisor = worksheet.cell(
                     current_cell.row, current_cell.col).value
 
-            else:
-                note = "None"
             # Remove new line characters
             if note:
                 note = note.replace("\n", " ")
@@ -172,20 +172,35 @@ def process_employee(employee_name, column_number, counter):
                         current_cell.row + 1, column_number)
                     if current_cell.value:
                         store_crew.append(current_cell.value)
-            # Display crew if employee is driver
-            elif "NO MEET TIME" not in meet_time:
-                if is_driver:
-                    current_cell = cell
-                    while current_cell.row > 1:
+                    else:
+                        break
+            # Get supervisor if employee is not supervisor
+            else:
+                current_cell = cell
+                while current_cell.row > 1:
+                    current_cell = worksheet.cell(
+                        current_cell.row - 1, column_number - 1)
+                    if "1)" in current_cell.value:
                         current_cell = worksheet.cell(
-                            current_cell.row - 1, column_number - 1)
-                        if "1)" in current_cell.value:
-                            current_cell = worksheet.cell(
-                                current_cell.row, column_number + 1)
-                            break
+                            current_cell.row, column_number)
+                        store_supervisor = current_cell.value
+                        supervisor_cell = current_cell
+                        break
+            # Display crew if employee is driver
+            if "NO MEET TIME" not in meet_time:
+                if is_driver and not is_supervisor:
+                    current_cell = cell
+                    # while current_cell.row > 1:
+                    #     current_cell = worksheet.cell(
+                    #         current_cell.row - 1, column_number - 1)
+                    #     if "1)" in current_cell.value:
+                    #         current_cell = worksheet.cell(
+                    #             current_cell.row, column_number + 1)
+                    #         break
                     while current_cell.row < 130:
                         current_cell = worksheet.cell(
-                            current_cell.row + 1, column_number)
+                            supervisor_cell.row + 1, column_number)
+                        print(current_cell.value)
                         if current_cell.value:
                             if employee_name not in current_cell.value:
                                 store_crew.append(current_cell.value)
@@ -221,7 +236,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = 'Lincoln'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 26]
