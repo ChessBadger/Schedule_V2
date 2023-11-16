@@ -226,7 +226,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lincoln'
+employee_name = 'Lashaun'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 26]

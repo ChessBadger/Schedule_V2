@@ -51,7 +51,7 @@ fetch('schedule_data.json')
           container.appendChild(item);
         };
 
-        const displayStoreCrew = (crew, container, isDriver) => {
+        const displayStoreCrew = (crew, container, isDriver, isSupervisor) => {
           const crewList = document.createElement('ul');
           crewList.style.listStyle = 'none'; // Removes bullets
           crewList.style.display = 'none'; // Initially hide crew list
@@ -66,7 +66,7 @@ fetch('schedule_data.json')
           item.appendChild(crewList);
           container.appendChild(item);
 
-          if (isDriver) {
+          if (isDriver || isSupervisor) {
             const buttonContainer = document.createElement('div');
             buttonContainer.style.display = 'flex'; // Use Flexbox for positioning
             buttonContainer.style.justifyContent = 'flex-end'; // Align button to the right
@@ -114,7 +114,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
-                displayStoreCrew(run.store_crew, mainCard, run.is_driver);
+                displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
                 showAll = false;
@@ -123,7 +123,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
-                displayStoreCrew(run.store_crew, mainCard, run.is_driver);
+                displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
                 displayAllStores(run, mainCard);
@@ -144,7 +144,7 @@ fetch('schedule_data.json')
         displayRunItem('Start Time', run.start_time, mainCard);
         displayRunItem('Note', run.note, mainCard);
         displayRunItem('Supervisor', run.store_supervisor, mainCard);
-        displayStoreCrew(run.store_crew, mainCard, run.is_driver);
+        displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
         displayCarLogo(run.is_driver, mainCard);
 
         let showAll = false; // Flag to toggle between displaying all stores and just the first
