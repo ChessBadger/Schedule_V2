@@ -114,6 +114,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
+                displayRunItem('Supervisor', run.store_supervisor, mainCard);
                 displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
@@ -123,6 +124,7 @@ fetch('schedule_data.json')
                 displayRunItem('Meet Time', run.meet_time, mainCard);
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
+                displayRunItem('Supervisor', run.store_supervisor, mainCard);
                 displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
