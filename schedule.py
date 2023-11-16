@@ -95,15 +95,19 @@ def process_employee(employee_name, column_number, counter):
             else:
                 note = "None"
 
-            # Check the employee is supervisor
-            if "1)" in worksheet.cell(current_cell.row, current_cell.col - 1).value:
-                is_supervisor = True
-                store_supervisor = worksheet.cell(
-                    current_cell.row, current_cell.col).value
-
             # Remove new line characters
             if note:
                 note = note.replace("\n", " ")
+
+            # Check the employee is supervisor
+            number_cell = worksheet.cell(
+                current_cell.row, current_cell.col - 1)
+            if number_cell.value is not None and "1)" in number_cell.value:
+                is_supervisor = True
+                store_supervisor = worksheet.cell(
+                    current_cell.row, current_cell.col).value
+            else:
+                store_supervisor = "None"
 
             while current_cell.row > 1:
                 current_cell = worksheet.cell(
@@ -121,6 +125,9 @@ def process_employee(employee_name, column_number, counter):
                 elif current_cell.value and re.match(r'^https?://', current_cell.value):
                     store_link.insert(0, current_cell.value.replace("\n", " "))
                     break
+
+            else:
+                store_supervisor = "None"
 
             if store_link and "OFFICE" not in store_link[0].upper():
                 # Step 3: Move up once cell above the link and set that as the store_address
@@ -175,7 +182,7 @@ def process_employee(employee_name, column_number, counter):
                     else:
                         break
             # Get supervisor if employee is not supervisor
-            else:
+            elif not is_supervisor and "OFFICE" not in store_link[0].upper():
                 current_cell = cell
                 while current_cell.row > 1:
                     current_cell = worksheet.cell(
