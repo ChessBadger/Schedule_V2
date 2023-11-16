@@ -170,7 +170,8 @@ def process_employee(employee_name, column_number, counter):
                     current_cell = worksheet.cell(
                         current_cell.row + 1, column_number)
                     if current_cell.value:
-                        store_crew.append(current_cell.value)
+                        if employee_name not in current_cell.value:
+                            store_crew.append(current_cell.value)
                     else:
                         break
 
