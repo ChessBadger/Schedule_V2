@@ -184,23 +184,13 @@ def process_employee(employee_name, column_number, counter):
                         current_cell = worksheet.cell(
                             current_cell.row, column_number)
                         store_supervisor = current_cell.value
-                        supervisor_cell = current_cell
                         break
             # Display crew if employee is driver
             if "NO MEET TIME" not in meet_time:
                 if is_driver and not is_supervisor:
-                    current_cell = cell
-                    # while current_cell.row > 1:
-                    #     current_cell = worksheet.cell(
-                    #         current_cell.row - 1, column_number - 1)
-                    #     if "1)" in current_cell.value:
-                    #         current_cell = worksheet.cell(
-                    #             current_cell.row, column_number + 1)
-                    #         break
                     while current_cell.row < 130:
                         current_cell = worksheet.cell(
-                            supervisor_cell.row + 1, column_number)
-                        print(current_cell.value)
+                            current_cell.row + 1, column_number)
                         if current_cell.value:
                             if employee_name not in current_cell.value:
                                 store_crew.append(current_cell.value)
