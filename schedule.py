@@ -49,7 +49,7 @@ schedule = {day: [] for day in days_of_week}
 
 class Store_Run:
     # Constructor (initializer) method
-    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, is_driver):
+    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor):
         self.meet_time = meet_time
         self.start_time = start_time
         self.inv_type = inv_type
@@ -58,7 +58,9 @@ class Store_Run:
         self.store_link = store_link
         self.note = note
         self.store_crew = store_crew
+        self.store_supervisor = store_supervisor
         self.is_driver = is_driver
+        self.is_supervisor = is_supervisor
 
 
 def process_employee(employee_name, column_number, counter):
@@ -68,6 +70,7 @@ def process_employee(employee_name, column_number, counter):
     try:
 
         is_driver = False
+        is_supervisor = False
         # Find all occurrences of employee_name in column 2
         cell_list = worksheet.findall(employee_name, in_column=column_number)
 
@@ -86,8 +89,15 @@ def process_employee(employee_name, column_number, counter):
             if worksheet.cell(current_cell.row, current_cell.col + 1).value:
                 note = worksheet.cell(
                     current_cell.row, current_cell.col + 1).value
+                # Check if the note contains the word "DRIVER"
                 if "DRIVER" in note.upper():
                     is_driver = True
+
+            # Check the employee is supervisor
+            if "1)" in worksheet.cell(current_cell.row, current_cell.col - 1).value:
+                is_supervisor = True
+                store_supervisor = worksheet.cell(
+                    current_cell.row, current_cell.col).value
 
             else:
                 note = "None"
@@ -154,30 +164,37 @@ def process_employee(employee_name, column_number, counter):
             else:
                 meet_time = "NO MEET TIME"
 
-            if "NO MEET TIME" in meet_time:
-                print("")
-            # Step 8: Display crew if "DRIVER" is in the note
-            elif is_driver:
+            # Display crew if employee is supervisor
+            if is_supervisor:
                 current_cell = cell
-                while current_cell.row > 1:
-                    current_cell = worksheet.cell(
-                        current_cell.row - 1, column_number - 1)
-                    if "1)" in current_cell.value:
-                        current_cell = worksheet.cell(
-                            current_cell.row, column_number + 1)
-                        break
-                while current_cell.row < 200:
+                while current_cell.row < 130:
                     current_cell = worksheet.cell(
                         current_cell.row + 1, column_number)
                     if current_cell.value:
-                        if employee_name not in current_cell.value:
-                            store_crew.append(current_cell.value)
-                    else:
-                        break
+                        store_crew.append(current_cell.value)
+            # Display crew if employee is driver
+            elif "NO MEET TIME" not in meet_time:
+                if is_driver:
+                    current_cell = cell
+                    while current_cell.row > 1:
+                        current_cell = worksheet.cell(
+                            current_cell.row - 1, column_number - 1)
+                        if "1)" in current_cell.value:
+                            current_cell = worksheet.cell(
+                                current_cell.row, column_number + 1)
+                            break
+                    while current_cell.row < 130:
+                        current_cell = worksheet.cell(
+                            current_cell.row + 1, column_number)
+                        if current_cell.value:
+                            if employee_name not in current_cell.value:
+                                store_crew.append(current_cell.value)
+                        else:
+                            break
 
             # Create an instance of the Store_Run class
             store_run_instance = Store_Run(
-                meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, is_driver)
+                meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor)
 
             # Append the data to the respective day's entry in the schedule_data dictionary
             schedule[days_of_week[counter]
@@ -204,7 +221,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lincoln'
+employee_name = 'Lashaun'
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 26]
