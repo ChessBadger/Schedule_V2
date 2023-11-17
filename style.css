@@ -116,6 +116,7 @@ button.show-all {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  overflow: hidden;
 }
 
 .car-logo {
