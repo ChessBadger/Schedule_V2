@@ -161,11 +161,30 @@ fetch('schedule_data.json')
   })
   .catch((error) => console.error('Error fetching the schedule:', error));
 
-// Function to toggle dark mode
 const toggleDarkMode = () => {
   const body = document.body;
-  body.classList.toggle('dark-mode'); // Toggle the 'dark-mode' class on the body
+  const isDarkMode = body.classList.toggle('dark-mode'); // Toggle the 'dark-mode' class on the body
+  const darkModeToggleButton = document.getElementById('darkModeToggle');
+
+  if (isDarkMode) {
+    darkModeToggleButton.textContent = 'Light Mode'; // Change button text to Light Mode if dark mode is activated
+  } else {
+    darkModeToggleButton.textContent = 'Dark Mode'; // Change button text to Dark Mode if light mode is activated
+  }
+
+  localStorage.setItem('preferredMode', isDarkMode ? 'dark' : 'light'); // Store the user's preference in localStorage
 };
+
+// Check for user's preferred mode in localStorage when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+  const preferredMode = localStorage.getItem('preferredMode');
+  const darkModeToggleButton = document.getElementById('darkModeToggle');
+
+  if (preferredMode === 'dark') {
+    document.body.classList.add('dark-mode'); // Apply dark mode if preferredMode is 'dark'
+    darkModeToggleButton.textContent = 'Light Mode'; // Change button text to Light Mode if dark mode is activated
+  }
+});
 
 // Find the dark mode toggle button
 const darkModeToggleButton = document.getElementById('darkModeToggle');
