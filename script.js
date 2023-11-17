@@ -160,3 +160,15 @@ fetch('schedule_data.json')
     }
   })
   .catch((error) => console.error('Error fetching the schedule:', error));
+
+// Function to toggle dark mode
+const toggleDarkMode = () => {
+  const body = document.body;
+  body.classList.toggle('dark-mode'); // Toggle the 'dark-mode' class on the body
+};
+
+// Find the dark mode toggle button
+const darkModeToggleButton = document.getElementById('darkModeToggle');
+
+// Add an event listener to the dark mode toggle button
+darkModeToggleButton.addEventListener('click', toggleDarkMode);

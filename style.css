@@ -51,6 +51,7 @@ img {
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.3);
 }
 
 /* Style for unordered list */
@@ -80,6 +81,7 @@ ul li:hover {
 button {
   display: inline-block;
   padding: 10px 20px;
+  margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
@@ -150,10 +152,91 @@ a:hover {
   color: #0056b3;
 }
 
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #1f1f1f; /* Slightly off-black background */
+  color: #f0f0f0; /* Light text color for better readability */
+}
+
+/* Header styles */
+body.dark-mode h1,
+body.dark-mode h3 {
+  color: #ffffff; /* White header text color in dark mode */
+}
+
+body.dark-mode #scheduleData {
+  background: #000000; /* Dark background for cards */
+}
+
+/* Card styles */
+body.dark-mode .card {
+  background: #1b1818; /* Dark background for cards */
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
+  border-color: white;
+  color: #f0f0f0; /* Text color for cards */
+}
+
+/* Store card styles */
+body.dark-mode .store-card {
+  background: #312c2c; /* Dark background for store cards */
+  color: #cccccc; /* Text color for store cards */
+}
+
+/* Link styles */
+body.dark-mode a {
+  color: #4e8cff; /* Modern link color in dark mode */
+}
+
+body.dark-mode a:hover {
+  color: #77a9ff; /* Link color on hover in dark mode */
+  text-decoration-color: #77a9ff; /* Link underline color on hover */
+}
+
+/* Button styles */
+body.dark-mode button {
+  background-color: #3167eb; /* Modern button background color in dark mode */
+  color: #ffffff; /* Button text color in dark mode */
+}
+
+body.dark-mode button:hover {
+  background-color: #4e8cff; /* Button background color on hover in dark mode */
+}
+
+/* Dark mode toggle button styles */
+#darkModeToggle {
+  position: absolute;
+  top: 20px; /* Adjust the top position as needed */
+  right: 20px; /* Adjust the right position as needed */
+  z-index: 1000; /* Ensure it appears above other elements */
+  background-color: #ffffff;
+  color: #1f1f1f; /* Toggle button text color */
+  /* border: 1px solid #ffffff; Toggle button border color */
+  padding: 8px 16px; /* Adjust padding as needed */
+  font-size: 14px; /* Adjust font size as needed */
+  cursor: pointer;
+}
+
+#darkModeToggle:hover {
+  /* background-color: #e5e5e5; Toggle button background color on hover */
+  color: #1f1f1f; /* Toggle button text color on hover */
+}
+
+body.dark-mode #darkModeToggle {
+  background-color: #1f1f1f;
+  color: #ffffff; /* Toggle button text color in dark mode */
+}
+
 @media (max-width: 900px) {
   #scheduleData {
     max-width: 100%;
     border-radius: 0;
+  }
+
+  #darkModeToggle {
+    top: 0px;
+    right: 0px;
+    width: 6rem;
+    height: 3rem;
   }
 
   .card {
