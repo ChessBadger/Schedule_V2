@@ -91,7 +91,7 @@ fetch('schedule_data.json')
         const displayCarLogo = (isDriver, container) => {
           if (isDriver) {
             const carLogo = document.createElement('img');
-            carLogo.setAttribute('src', 'car_logo.jpg'); // Replace 'car_logo.png' with your image URL
+            carLogo.setAttribute('src', 'car_logo_light.jpg'); // Replace 'car_logo.png' with your image URL
             carLogo.setAttribute('alt', 'Car Logo');
             carLogo.classList.add('car-logo'); // Add a class for styling
 
