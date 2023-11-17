@@ -204,6 +204,11 @@ body.dark-mode button:hover {
   background-color: #4e8cff; /* Button background color on hover in dark mode */
 }
 
+body.dark-mode ul li:hover {
+  background-color: #312c2c; /* Change background color on hover */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
 /* Dark mode toggle button styles */
 #darkModeToggle {
   position: absolute;
