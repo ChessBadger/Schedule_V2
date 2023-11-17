@@ -169,11 +169,13 @@ body.dark-mode h3 {
 
 body.dark-mode #scheduleData {
   background: #000000; /* Dark background for cards */
+  background: #161414; /* Dark background for cards */
 }
 
 /* Card styles */
 body.dark-mode .card {
   background: #1b1818; /* Dark background for cards */
+  background: #000000; /* Dark background for cards */
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
   border-color: white;
   color: #f0f0f0; /* Text color for cards */

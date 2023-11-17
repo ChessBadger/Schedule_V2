@@ -90,10 +90,18 @@ fetch('schedule_data.json')
 
         const displayCarLogo = (isDriver, container) => {
           if (isDriver) {
+            const preferredMode = localStorage.getItem('preferredMode');
             const carLogo = document.createElement('img');
-            carLogo.setAttribute('src', 'car_logo_light.jpg'); // Replace 'car_logo.png' with your image URL
-            carLogo.setAttribute('alt', 'Car Logo');
-            carLogo.classList.add('car-logo'); // Add a class for styling
+
+            if (preferredMode === 'dark') {
+              carLogo.setAttribute('src', 'car_logo_dark.jpg'); // Replace 'car_logo.png' with your image URL
+              carLogo.setAttribute('alt', 'Car Logo');
+              carLogo.classList.add('car-logo'); // Add a class for styling
+            } else {
+              carLogo.setAttribute('src', 'car_logo_light.jpg'); // Replace 'car_logo.png' with your image URL
+              carLogo.setAttribute('alt', 'Car Logo');
+              carLogo.classList.add('car-logo'); // Add a class for styling
+            }
 
             const logoContainer = document.createElement('div');
             logoContainer.classList.add('car-logo-container'); // Add a class for positioning
@@ -167,12 +175,22 @@ const toggleDarkMode = () => {
   const darkModeToggleButton = document.getElementById('darkModeToggle');
 
   if (isDarkMode) {
-    darkModeToggleButton.textContent = 'Light Mode'; // Change button text to Light Mode if dark mode is activated
+    darkModeToggleButton.textContent = 'Light Mode';
+    // Change the car logo image source to the dark mode version
+    const carLogos = document.querySelectorAll('.car-logo'); // Assuming car-logo is the class used for the car logo image
+    carLogos.forEach((carLogo) => {
+      carLogo.setAttribute('src', 'car_logo_dark.jpg'); // Change the src attribute for each car logo image
+    });
+    localStorage.setItem('preferredMode', 'dark'); // Store the user's preference in localStorage
   } else {
-    darkModeToggleButton.textContent = 'Dark Mode'; // Change button text to Dark Mode if light mode is activated
+    darkModeToggleButton.textContent = 'Dark Mode';
+    // Change the car logo image source to the light mode version
+    const carLogos = document.querySelectorAll('.car-logo'); // Assuming car-logo is the class used for the car logo image
+    carLogos.forEach((carLogo) => {
+      carLogo.setAttribute('src', 'car_logo_light.jpg'); // Change the src attribute for each car logo image
+    });
+    localStorage.setItem('preferredMode', 'light'); // Store the user's preference in localStorage
   }
-
-  localStorage.setItem('preferredMode', isDarkMode ? 'dark' : 'light'); // Store the user's preference in localStorage
 };
 
 // Check for user's preferred mode in localStorage when the page loads
