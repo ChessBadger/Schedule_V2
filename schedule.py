@@ -16,6 +16,8 @@ scope = ['https://spreadsheets.google.com/feeds',
 creds = Credentials.from_service_account_info(credentials, scopes=scope)
 client = gspread.authorize(creds)
 
+sheet_names = ['Week1', 'Week2']
+
 # Open the Google Sheets document by its title
 spreadsheet = client.open('Week1')
 
@@ -36,11 +38,10 @@ sunday_date = datetime.strptime(
 # Create an array with the days of the week
 days_of_week = [sunday_date.strftime('%a, %b %d')]
 
-# Add the next six days (Monday to Saturday)
-for i in range(1, 7):
+# Add the next two weeks
+for i in range(1, 14):
     next_day = sunday_date + timedelta(days=i)
     days_of_week.append(next_day.strftime('%a, %b %d'))
-    # ['Sun, Nov 05', 'Mon, Nov 06', 'Tue, Nov 07', 'Wed, Nov 08', 'Thu, Nov 09', 'Fri, Nov 10', 'Sat, Nov 11']
 
 
 # Create a dictionary with the days of the week as keys and empty lists as values
@@ -239,17 +240,23 @@ employee_name = 'Lashaun'
 columns_to_process = [2, 6, 10, 14, 18, 22, 26]
 counter = 0
 
-# Iterate through each column
-for column in columns_to_process:
-    try:
-        process_employee(employee_name, column, counter)
-        counter += 1
-        # Update JSON after each successful API call
-        update_schedule_json(schedule)
-    except gspread.exceptions.CellNotFound:
-        print(f"{employee_name} not found in column {column}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+
+for sheet_name in sheet_names:
+    # Open the Google Sheets document by its title
+    spreadsheet = client.open(sheet_name)
+    # Select the worksheet by title
+    worksheet = spreadsheet.sheet1
+    # Iterate through each column
+    for column in columns_to_process:
+        try:
+            process_employee(employee_name, column, counter)
+            counter += 1
+            # Update JSON after each successful API call
+            update_schedule_json(schedule)
+        except gspread.exceptions.CellNotFound:
+            print(f"{employee_name} not found in column {column}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
 # If needed, update JSON after all iterations
