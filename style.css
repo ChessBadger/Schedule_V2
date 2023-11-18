@@ -136,6 +136,7 @@ h3 {
   margin-bottom: 10px;
   color: #555;
   font-size: 1.5em;
+  border-bottom: 1px solid #555; /* Add a bottom border */
 }
 
 h4 {
@@ -165,6 +166,10 @@ body.dark-mode {
 body.dark-mode h1,
 body.dark-mode h3 {
   color: #ffffff; /* White header text color in dark mode */
+}
+
+body.dark-mode h3 {
+  border-bottom-color: #ffffff; /* White border color in dark mode */
 }
 
 body.dark-mode #scheduleData {
@@ -210,6 +215,10 @@ body.dark-mode button:hover {
 body.dark-mode ul li:hover {
   background-color: #312c2c; /* Change background color on hover */
   cursor: pointer; /* Show pointer cursor on hover */
+}
+
+body.dark-mode h3 {
+  border-bottom: 1px solid #ccc;
 }
 
 /* Dark mode toggle button styles */
