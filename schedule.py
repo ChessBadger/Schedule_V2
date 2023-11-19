@@ -39,7 +39,7 @@ sunday_date = datetime.strptime(
 days_of_week = [sunday_date.strftime('%a, %b %d')]
 
 # Add the next two weeks
-for i in range(1, 21):
+for i in range(1, 14):
     next_day = sunday_date + timedelta(days=i)
     days_of_week.append(next_day.strftime('%a, %b %d'))
 
