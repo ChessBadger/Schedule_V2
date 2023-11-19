@@ -19,7 +19,7 @@ client = gspread.authorize(creds)
 sheet_names = ['Week1', 'Week2']
 
 # Open the Google Sheets document by its title
-spreadsheet = client.open('Week1')
+spreadsheet = client.open(sheet_names[0])
 
 
 # Select the worksheet by title
@@ -39,7 +39,7 @@ sunday_date = datetime.strptime(
 days_of_week = [sunday_date.strftime('%a, %b %d')]
 
 # Add the next two weeks
-for i in range(1, 14):
+for i in range(1, 21):
     next_day = sunday_date + timedelta(days=i)
     days_of_week.append(next_day.strftime('%a, %b %d'))
 
@@ -50,7 +50,7 @@ schedule = {day: [] for day in days_of_week}
 
 class Store_Run:
     # Constructor (initializer) method
-    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor):
+    def __init__(self, meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, store_drivers, is_driver, is_supervisor):
         self.meet_time = meet_time
         self.start_time = start_time
         self.inv_type = inv_type
@@ -60,6 +60,7 @@ class Store_Run:
         self.note = note
         self.store_crew = store_crew
         self.store_supervisor = store_supervisor
+        self.store_drivers = store_drivers
         self.is_driver = is_driver
         self.is_supervisor = is_supervisor
 
@@ -88,6 +89,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     store_name = []
                     inv_type = []
                     store_crew = []
+                    store_drivers = []
 
                     # Step 2: Move up one cell at a time until a link is found
                     current_cell = cell
@@ -99,6 +101,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                         # Check if the note contains the word "DRIVER"
                         if "DRIVER" in note.upper():
                             is_driver = True
+                            store_drivers.append(current_cell.value)
                     else:
                         note = "None"
 
@@ -185,6 +188,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Display crew if employee is supervisor
                     if is_supervisor:
                         current_cell = cell
+                        supervisor_cell = current_cell
                         while current_cell.row < 130:
                             current_cell = worksheet.cell(
                                 current_cell.row + 1, column_number)
@@ -202,7 +206,24 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                 current_cell = worksheet.cell(
                                     current_cell.row, column_number)
                                 store_supervisor = current_cell.value
+                                supervisor_cell = current_cell
                                 break
+
+                    # Display drivers if there is a meet
+                    if "NO MEET TIME" not in meet_time:
+                        while supervisor_cell.row < 130:
+                            supervisor_cell = worksheet.cell(
+                                supervisor_cell.row + 1, column_number)
+                            if supervisor_cell.value:
+                                driver_cell = worksheet.cell(
+                                    supervisor_cell.row, column_number + 1)
+                                if driver_cell.value and "DRIVER" in driver_cell.value.upper():
+                                    if employee_name not in supervisor_cell.value.upper():
+                                        store_drivers.append(
+                                            supervisor_cell.value)
+                            else:
+                                break
+
                     # Display crew if employee is driver
                     if "NO MEET TIME" not in meet_time:
                         if is_driver and not is_supervisor:
@@ -218,7 +239,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
 
                     # Create an instance of the Store_Run class
                     store_run_instance = Store_Run(
-                        meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor)
+                        meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, store_drivers, is_driver, is_supervisor)
 
                     # Append the data to the respective day's entry in the schedule_data dictionary
                     schedule[days_of_week[counter]

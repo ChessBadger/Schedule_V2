@@ -27,9 +27,18 @@ fetch('schedule_data.json')
         };
 
         const displayRunItem = (label, value, container) => {
-          const item = document.createElement('p');
-          item.innerHTML = `<strong>${label}:</strong> ${value}`;
-          container.appendChild(item);
+          if (value !== 'None') {
+            const item = document.createElement('p');
+            item.innerHTML = `<strong>${label}:</strong> ${value}`;
+            container.appendChild(item);
+          }
+        };
+
+        const displayDrivers = (label, drivers, container) => {
+          if (drivers.length > 0) {
+            const driversText = drivers.join(' | '); // Separate drivers by pipe symbol
+            displayRunItem(label, driversText, container);
+          }
         };
 
         const displayLink = (label, value, container) => {
@@ -124,6 +133,7 @@ fetch('schedule_data.json')
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
                 displayRunItem('Supervisor', run.store_supervisor, mainCard);
+                displayDrivers('Drivers', run.store_drivers, mainCard);
                 displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
@@ -134,6 +144,7 @@ fetch('schedule_data.json')
                 displayRunItem('Start Time', run.start_time, mainCard);
                 displayRunItem('Note', run.note, mainCard);
                 displayRunItem('Supervisor', run.store_supervisor, mainCard);
+                displayDrivers('Drivers', run.store_drivers, mainCard);
                 displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
                 displayCarLogo(run.is_driver, mainCard);
 
@@ -155,6 +166,7 @@ fetch('schedule_data.json')
         displayRunItem('Start Time', run.start_time, mainCard);
         displayRunItem('Note', run.note, mainCard);
         displayRunItem('Supervisor', run.store_supervisor, mainCard);
+        displayDrivers('Drivers', run.store_drivers, mainCard);
         displayStoreCrew(run.store_crew, mainCard, run.is_driver, run.is_supervisor);
         displayCarLogo(run.is_driver, mainCard);
 
