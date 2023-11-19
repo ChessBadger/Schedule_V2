@@ -5,13 +5,14 @@ fetch('schedule_data.json')
 
     for (const [day, runs] of Object.entries(schedule)) {
       const dayElement = document.createElement('div');
+      dayElement.classList.add('card');
       const dayHeader = document.createElement('h3');
       dayHeader.textContent = day;
       dayElement.appendChild(dayHeader);
 
       runs.forEach((run) => {
         const mainCard = document.createElement('div');
-        mainCard.classList.add('card');
+        // mainCard.classList.add('card');
 
         const displayAllStores = (run, card) => {
           run.store_name.forEach((store, index) => {

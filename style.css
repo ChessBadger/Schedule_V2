@@ -68,11 +68,6 @@ ul li {
   border-bottom: 1px solid #ccc; /* Add a bottom border for separation */
 }
 
-/* Style for the last list item to remove the border */
-ul li:last-child {
-  border-bottom: none; /* Remove border for the last item */
-}
-
 /* Hover effect on list items */
 ul li:hover {
   background-color: #f5f5f5; /* Change background color on hover */
@@ -179,16 +174,14 @@ body.dark-mode #scheduleData {
 
 /* Card styles */
 body.dark-mode .card {
-  background: #1b1818; /* Dark background for cards */
-  background: #000000; /* Dark background for cards */
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
+  background: #252525; /* Dark background for cards */
   border-color: white;
   color: #f0f0f0; /* Text color for cards */
 }
 
 /* Store card styles */
 body.dark-mode .store-card {
-  background: #312c2c; /* Dark background for store cards */
+  background: #333333; /* Dark background for store cards */
   color: #cccccc; /* Text color for store cards */
 }
 
@@ -213,8 +206,12 @@ body.dark-mode button:hover {
 }
 
 body.dark-mode ul li:hover {
-  background-color: #312c2c; /* Change background color on hover */
+  background-color: #3a3a3a; /* Change background color on hover */
   cursor: pointer; /* Show pointer cursor on hover */
+}
+
+body.dark-mode ul li {
+  border-bottom: 1px solid #555; /* Add a bottom border for separation */
 }
 
 body.dark-mode h3 {
