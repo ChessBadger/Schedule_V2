@@ -19,7 +19,7 @@ client = gspread.authorize(creds)
 sheet_names = ['Week1', 'Week2']
 
 # Open the Google Sheets document by its title
-spreadsheet = client.open('Week1')
+spreadsheet = client.open(sheet_names[0])
 
 
 # Select the worksheet by title
@@ -39,7 +39,7 @@ sunday_date = datetime.strptime(
 days_of_week = [sunday_date.strftime('%a, %b %d')]
 
 # Add the next two weeks
-for i in range(1, 14):
+for i in range(1, 21):
     next_day = sunday_date + timedelta(days=i)
     days_of_week.append(next_day.strftime('%a, %b %d'))
 
@@ -101,7 +101,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                         # Check if the note contains the word "DRIVER"
                         if "DRIVER" in note.upper():
                             is_driver = True
-                            store_drivers.append(employee_name)
+                            store_drivers.append(current_cell.value)
                     else:
                         note = "None"
 
@@ -224,8 +224,6 @@ def process_employee(employee_name, column_number, counter, excel_file):
                             else:
                                 break
 
-                    print(days_of_week[counter], store_drivers)
-
                     # Display crew if employee is driver
                     if "NO MEET TIME" not in meet_time:
                         if is_driver and not is_supervisor:
@@ -246,7 +244,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Append the data to the respective day's entry in the schedule_data dictionary
                     schedule[days_of_week[counter]
                              ].append(store_run_instance.__dict__)
-                    # print(days_of_week[counter], "Done")
+                    print(days_of_week[counter], "Done")
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
