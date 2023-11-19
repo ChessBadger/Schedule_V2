@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import re
 import json
 import time
-
+import openpyxl
 
 # Load credentials from a JSON file
 with open('config.json') as config_file:
@@ -64,7 +64,7 @@ class Store_Run:
         self.is_supervisor = is_supervisor
 
 
-def process_employee(employee_name, column_number, counter):
+def process_employee(employee_name, column_number, counter, excel_file):
     # # Convert employee_name to uppercase
     # employee_name = employee_name.upper
 
@@ -72,147 +72,158 @@ def process_employee(employee_name, column_number, counter):
 
         is_driver = False
         is_supervisor = False
-        # Find all occurrences of employee_name in column 2
-        cell_list = worksheet.findall(employee_name, in_column=column_number)
 
-        # Iterate through each occurrence
-        for cell in cell_list:
-            store_link = []
-            store_address = []
-            store_name = []
-            inv_type = []
-            store_crew = []
+        # Load the Excel workbook
+        workbook = openpyxl.load_workbook(excel_file)
+        worksheet = workbook.active
 
-            # Step 2: Move up one cell at a time until a link is found
-            current_cell = cell
+        # Iterate through the rows in the specified column
+        for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row, min_col=column_number, max_col=column_number):
+            for cell in row:
+                # Check for occurrences of employee_name in the column
+                if cell.value == employee_name:
 
-            # Add the any notes next to name
-            if worksheet.cell(current_cell.row, current_cell.col + 1).value:
-                note = worksheet.cell(
-                    current_cell.row, current_cell.col + 1).value
-                # Check if the note contains the word "DRIVER"
-                if "DRIVER" in note.upper():
-                    is_driver = True
-            else:
-                note = "None"
+                    store_link = []
+                    store_address = []
+                    store_name = []
+                    inv_type = []
+                    store_crew = []
 
-            # Remove new line characters
-            if note:
-                note = note.replace("\n", " ")
+                    # Step 2: Move up one cell at a time until a link is found
+                    current_cell = cell
 
-            # Check the employee is supervisor
-            number_cell = worksheet.cell(
-                current_cell.row, current_cell.col - 1)
-            if number_cell.value is not None and "1)" in number_cell.value:
-                is_supervisor = True
-                store_supervisor = worksheet.cell(
-                    current_cell.row, current_cell.col).value
-            else:
-                store_supervisor = "None"
+                    # Add the any notes next to name
+                    if worksheet.cell(current_cell.row, current_cell.column + 1).value:
+                        note = worksheet.cell(
+                            current_cell.row, current_cell.column + 1).value
+                        # Check if the note contains the word "DRIVER"
+                        if "DRIVER" in note.upper():
+                            is_driver = True
+                    else:
+                        note = "None"
 
-            while current_cell.row > 1:
-                current_cell = worksheet.cell(
-                    current_cell.row - 1, column_number)
-                # Check if the content of the cell is not None and contains the word "OFFICE"
-                if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
-                    store_link.append(current_cell.value.replace("\n", " "))
-                    store_name.append(current_cell.value.replace("\n", " "))
-                    store_address.append("None")
-                    inv_type.append("None")
-                    start_time = "None"
-                    meet_time = "None"
-                    break
-                # Check if the content of the cell is not None and is a hyperlink
-                elif current_cell.value and re.match(r'^https?://', current_cell.value):
-                    store_link.insert(0, current_cell.value.replace("\n", " "))
-                    break
+                    # Remove new line characters
+                    if note:
+                        note = note.replace("\n", " ")
 
-            else:
-                store_supervisor = "None"
+                    # Check the employee is supervisor
+                    number_cell = worksheet.cell(
+                        current_cell.row, current_cell.column - 1)
+                    if number_cell.value is not None and "1)" in number_cell.value:
+                        is_supervisor = True
+                        store_supervisor = worksheet.cell(
+                            current_cell.row, current_cell.column).value
+                    else:
+                        store_supervisor = "None"
 
-            if store_link and "OFFICE" not in store_link[0].upper():
-                # Step 3: Move up once cell above the link and set that as the store_address
-                store_address.insert(0, worksheet.cell(
-                    current_cell.row - 1, column_number).value.replace("\n", " "))
+                    while current_cell.row > 1:
+                        current_cell = worksheet.cell(
+                            current_cell.row - 1, column_number)
+                        # Check if the content of the cell is not None and contains the word "OFFICE"
+                        if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
+                            store_link.append(
+                                current_cell.value.replace("\n", " "))
+                            store_name.append(
+                                current_cell.value.replace("\n", " "))
+                            store_address.append("None")
+                            inv_type.append("None")
+                            start_time = "None"
+                            meet_time = "None"
+                            break
+                        # Check if the content of the cell is not None and is a hyperlink
+                        elif current_cell.value and re.match(r'^https?://', current_cell.value):
+                            store_link.insert(
+                                0, current_cell.value.replace("\n", " "))
+                            break
 
-                # Step 4: Move up one cell from the store_address and set that cell as the store_name
-                store_name.insert(0, worksheet.cell(
-                    current_cell.row - 2, column_number).value.replace("\n", " "))
+                    else:
+                        store_supervisor = "None"
 
-                # Step 5: Move one cell up from the store_name and set that cell as the inv_type
-                inv_type.insert(0, worksheet.cell(
-                    current_cell.row - 3, column_number).value.replace("\n", " "))
-
-                # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
-                while current_cell.row > 1:
-                    current_cell = worksheet.cell(
-                        current_cell.row - 1, column_number)
-                    cell_value = current_cell.value
-                    # Check for HH:MM format
-                    if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
-                        start_time = cell_value.strip()
-                        break
-                    elif current_cell.value and re.match(r'^https?://', current_cell.value):
-                        # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
-                        store_link.insert(0, cell_value.replace("\n", " "))
+                    if store_link and "OFFICE" not in store_link[0].upper():
+                        # Step 3: Move up once cell above the link and set that as the store_address
                         store_address.insert(0, worksheet.cell(
                             current_cell.row - 1, column_number).value.replace("\n", " "))
+
+                        # Step 4: Move up one cell from the store_address and set that cell as the store_name
                         store_name.insert(0, worksheet.cell(
                             current_cell.row - 2, column_number).value.replace("\n", " "))
+
+                        # Step 5: Move one cell up from the store_name and set that cell as the inv_type
                         inv_type.insert(0, worksheet.cell(
                             current_cell.row - 3, column_number).value.replace("\n", " "))
 
-            # Step 7: Move up one cell from the start_time and set it to the meet_time
-            if start_time:
-                if worksheet.cell(current_cell.row - 1, column_number).value:
-                    meet_time = worksheet.cell(
-                        current_cell.row - 1, column_number).value
-                else:
-                    meet_time = "NO MEET TIME"
-            else:
-                meet_time = "NO MEET TIME"
+                        # Step 6: Move up one cell at a time until a cell is found that starts with a time in the format of HH:MM or H:MM
+                        while current_cell.row > 1:
+                            current_cell = worksheet.cell(
+                                current_cell.row - 1, column_number)
+                            cell_value = current_cell.value
+                            # Check for HH:MM format
+                            if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
+                                start_time = cell_value.strip()
+                                break
+                            elif current_cell.value and re.match(r'^https?://', current_cell.value):
+                                # If another link is found before a time is found, add that link to store_link and repeat steps 3-5
+                                store_link.insert(
+                                    0, cell_value.replace("\n", " "))
+                                store_address.insert(0, worksheet.cell(
+                                    current_cell.row - 1, column_number).value.replace("\n", " "))
+                                store_name.insert(0, worksheet.cell(
+                                    current_cell.row - 2, column_number).value.replace("\n", " "))
+                                inv_type.insert(0, worksheet.cell(
+                                    current_cell.row - 3, column_number).value.replace("\n", " "))
 
-            # Display crew if employee is supervisor
-            if is_supervisor:
-                current_cell = cell
-                while current_cell.row < 130:
-                    current_cell = worksheet.cell(
-                        current_cell.row + 1, column_number)
-                    if current_cell.value:
-                        store_crew.append(current_cell.value)
-                    else:
-                        break
-            # Get supervisor if employee is not supervisor
-            elif not is_supervisor and "OFFICE" not in store_link[0].upper():
-                current_cell = cell
-                while current_cell.row > 1:
-                    current_cell = worksheet.cell(
-                        current_cell.row - 1, column_number - 1)
-                    if "1)" in current_cell.value:
-                        current_cell = worksheet.cell(
-                            current_cell.row, column_number)
-                        store_supervisor = current_cell.value
-                        break
-            # Display crew if employee is driver
-            if "NO MEET TIME" not in meet_time:
-                if is_driver and not is_supervisor:
-                    while current_cell.row < 130:
-                        current_cell = worksheet.cell(
-                            current_cell.row + 1, column_number)
-                        if current_cell.value:
-                            if employee_name not in current_cell.value:
-                                store_crew.append(current_cell.value)
+                    # Step 7: Move up one cell from the start_time and set it to the meet_time
+                    if start_time:
+                        if worksheet.cell(current_cell.row - 1, column_number).value:
+                            meet_time = worksheet.cell(
+                                current_cell.row - 1, column_number).value
                         else:
-                            break
+                            meet_time = "NO MEET TIME"
+                    else:
+                        meet_time = "NO MEET TIME"
 
-            # Create an instance of the Store_Run class
-            store_run_instance = Store_Run(
-                meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor)
+                    # Display crew if employee is supervisor
+                    if is_supervisor:
+                        current_cell = cell
+                        while current_cell.row < 130:
+                            current_cell = worksheet.cell(
+                                current_cell.row + 1, column_number)
+                            if current_cell.value:
+                                store_crew.append(current_cell.value)
+                            else:
+                                break
+                    # Get supervisor if employee is not supervisor
+                    elif not is_supervisor and "OFFICE" not in store_link[0].upper():
+                        current_cell = cell
+                        while current_cell.row > 1:
+                            current_cell = worksheet.cell(
+                                current_cell.row - 1, column_number - 1)
+                            if "1)" in current_cell.value:
+                                current_cell = worksheet.cell(
+                                    current_cell.row, column_number)
+                                store_supervisor = current_cell.value
+                                break
+                    # Display crew if employee is driver
+                    if "NO MEET TIME" not in meet_time:
+                        if is_driver and not is_supervisor:
+                            while current_cell.row < 130:
+                                current_cell = worksheet.cell(
+                                    current_cell.row + 1, column_number)
+                                if current_cell.value:
+                                    if employee_name not in current_cell.value:
+                                        store_crew.append(
+                                            current_cell.value)
+                                else:
+                                    break
 
-            # Append the data to the respective day's entry in the schedule_data dictionary
-            schedule[days_of_week[counter]
-                     ].append(store_run_instance.__dict__)
-            print(days_of_week[counter], "Done")
+                    # Create an instance of the Store_Run class
+                    store_run_instance = Store_Run(
+                        meet_time, start_time, inv_type, store_name, store_address, store_link, note, store_crew, store_supervisor, is_driver, is_supervisor)
+
+                    # Append the data to the respective day's entry in the schedule_data dictionary
+                    schedule[days_of_week[counter]
+                             ].append(store_run_instance.__dict__)
+                    print(days_of_week[counter], "Done")
 
     except gspread.exceptions.APIError as api_error:
         if api_error.response.status_code == 429:  # Rate limit exceeded
@@ -247,9 +258,25 @@ for sheet_name in sheet_names:
     # Select the worksheet by title
     worksheet = spreadsheet.sheet1
     # Iterate through each column
+
+    # Extract data from Google Sheets
+    data = worksheet.get_all_values()
+
+    # Create a new Excel workbook and sheet
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+
+    # Insert data into the Excel sheet maintaining formatting
+    for row_index, row_data in enumerate(data, start=1):
+        for col_index, cell_data in enumerate(row_data, start=1):
+            sheet.cell(row=row_index, column=col_index).value = cell_data
+
+    workbook.save(worksheet.title + '.xlsx')
+
     for column in columns_to_process:
         try:
-            process_employee(employee_name, column, counter)
+            process_employee(employee_name, column, counter,
+                             worksheet.title + '.xlsx')
             counter += 1
             # Update JSON after each successful API call
             update_schedule_json(schedule)
