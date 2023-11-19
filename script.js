@@ -27,9 +27,11 @@ fetch('schedule_data.json')
         };
 
         const displayRunItem = (label, value, container) => {
-          const item = document.createElement('p');
-          item.innerHTML = `<strong>${label}:</strong> ${value}`;
-          container.appendChild(item);
+          if (value !== 'None') {
+            const item = document.createElement('p');
+            item.innerHTML = `<strong>${label}:</strong> ${value}`;
+            container.appendChild(item);
+          }
         };
 
         const displayDrivers = (label, drivers, container) => {
