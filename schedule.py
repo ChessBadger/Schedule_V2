@@ -81,7 +81,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
         for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row, min_col=column_number, max_col=column_number):
             for cell in row:
                 # Check for occurrences of employee_name in the column
-                if cell.value == employee_name:
+                if cell.value and cell.value.upper() == employee_name:
 
                     store_link = []
                     store_address = []
@@ -245,7 +245,7 @@ def update_schedule_json(schedule):
         json.dump(schedule, json_file)
 
 
-employee_name = 'Lashaun'
+employee_name = input("Enter employee name: ").upper()
 
 # Set which columns to check for employee names
 columns_to_process = [2, 6, 10, 14, 18, 22, 26]
@@ -271,12 +271,12 @@ for sheet_name in sheet_names:
         for col_index, cell_data in enumerate(row_data, start=1):
             sheet.cell(row=row_index, column=col_index).value = cell_data
 
-    workbook.save(worksheet.title + '.xlsx')
+    workbook.save(sheet_name + '.xlsx')
 
     for column in columns_to_process:
         try:
             process_employee(employee_name, column, counter,
-                             worksheet.title + '.xlsx')
+                             sheet_name + '.xlsx')
             counter += 1
             # Update JSON after each successful API call
             update_schedule_json(schedule)
