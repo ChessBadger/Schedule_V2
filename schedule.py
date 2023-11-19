@@ -181,9 +181,9 @@ def process_employee(employee_name, column_number, counter, excel_file):
                             meet_time = worksheet.cell(
                                 current_cell.row - 1, column_number).value
                         else:
-                            meet_time = "NO MEET TIME"
+                            meet_time = "None"
                     else:
-                        meet_time = "NO MEET TIME"
+                        meet_time = "None"
 
                     # Display crew if employee is supervisor
                     if is_supervisor:
@@ -210,7 +210,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                 break
 
                     # Display drivers if there is a meet
-                    if "NO MEET TIME" not in meet_time:
+                    if "None" not in meet_time:
                         while supervisor_cell.row < 130:
                             supervisor_cell = worksheet.cell(
                                 supervisor_cell.row + 1, column_number)
@@ -225,7 +225,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                 break
 
                     # Display crew if employee is driver
-                    if "NO MEET TIME" not in meet_time:
+                    if "None" not in meet_time:
                         if is_driver and not is_supervisor:
                             while current_cell.row < 130:
                                 current_cell = worksheet.cell(
