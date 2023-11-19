@@ -95,11 +95,11 @@ fetch('schedule_data.json')
             const carLogo = document.createElement('img');
 
             if (preferredMode === 'dark') {
-              carLogo.setAttribute('src', 'car_logo_dark.jpg'); // Replace 'car_logo.png' with your image URL
+              carLogo.setAttribute('src', 'car_logo_dark.png'); // Replace 'car_logo.png' with your image URL
               carLogo.setAttribute('alt', 'Car Logo');
               carLogo.classList.add('car-logo'); // Add a class for styling
             } else {
-              carLogo.setAttribute('src', 'car_logo_light.jpg'); // Replace 'car_logo.png' with your image URL
+              carLogo.setAttribute('src', 'car_logo_light.png'); // Replace 'car_logo.png' with your image URL
               carLogo.setAttribute('alt', 'Car Logo');
               carLogo.classList.add('car-logo'); // Add a class for styling
             }
@@ -180,7 +180,7 @@ const toggleDarkMode = () => {
     // Change the car logo image source to the dark mode version
     const carLogos = document.querySelectorAll('.car-logo'); // Assuming car-logo is the class used for the car logo image
     carLogos.forEach((carLogo) => {
-      carLogo.setAttribute('src', 'car_logo_dark.jpg'); // Change the src attribute for each car logo image
+      carLogo.setAttribute('src', 'car_logo_dark.png'); // Change the src attribute for each car logo image
     });
     localStorage.setItem('preferredMode', 'dark'); // Store the user's preference in localStorage
   } else {
@@ -188,7 +188,7 @@ const toggleDarkMode = () => {
     // Change the car logo image source to the light mode version
     const carLogos = document.querySelectorAll('.car-logo'); // Assuming car-logo is the class used for the car logo image
     carLogos.forEach((carLogo) => {
-      carLogo.setAttribute('src', 'car_logo_light.jpg'); // Change the src attribute for each car logo image
+      carLogo.setAttribute('src', 'car_logo_light.png'); // Change the src attribute for each car logo image
     });
     localStorage.setItem('preferredMode', 'light'); // Store the user's preference in localStorage
   }
