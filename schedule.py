@@ -232,7 +232,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                     at_store_cell = worksheet.cell(
                                         current_cell.row, column_number + 1).value
                                     if at_store_cell:
-                                        if "@ STORE" not in at_store_cell.upper():
+                                        if "@ STORE" not in at_store_cell.upper() and "DRIVER" not in at_store_cell.upper():
                                             if employee_name not in current_cell.value:
                                                 store_crew.append(
                                                     current_cell.value)
