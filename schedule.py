@@ -186,6 +186,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
 
                     # Display crew if employee is supervisor
                     if is_supervisor:
+                        store_crew.append(store_supervisor)
                         current_cell = cell
                         supervisor_cell = current_cell
                         while current_cell.row < 130:
@@ -195,6 +196,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                 store_crew.append(current_cell.value)
                             else:
                                 break
+
                     # Get supervisor if employee is not supervisor
                     elif not is_supervisor and "OFFICE" not in store_link[0].upper():
                         current_cell = cell
@@ -226,6 +228,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Display crew if employee is driver
                     if "None" not in meet_time:
                         if is_driver and not is_supervisor:
+                            store_crew.append(store_supervisor)
                             while current_cell.row < 130:
                                 current_cell = worksheet.cell(
                                     current_cell.row + 1, column_number)
