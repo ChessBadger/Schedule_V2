@@ -101,7 +101,6 @@ def process_employee(employee_name, column_number, counter, excel_file):
                         # Check if the note contains the word "DRIVER"
                         if "DRIVER" in note.upper():
                             is_driver = True
-                            store_drivers.append(current_cell.value)
                     else:
                         note = "None"
 
