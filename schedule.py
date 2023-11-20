@@ -186,7 +186,6 @@ def process_employee(employee_name, column_number, counter, excel_file):
 
                     # Display crew if employee is supervisor
                     if is_supervisor:
-                        store_crew.append(store_supervisor)
                         current_cell = cell
                         supervisor_cell = current_cell
                         while current_cell.row < 130:
@@ -228,16 +227,23 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Display crew if employee is driver
                     if "None" not in meet_time:
                         if is_driver and not is_supervisor:
-                            store_crew.append(store_supervisor)
                             while current_cell.row < 130:
-                                current_cell = worksheet.cell(
-                                    current_cell.row + 1, column_number)
                                 if current_cell.value:
-                                    if employee_name not in current_cell.value:
-                                        store_crew.append(
-                                            current_cell.value)
+                                    at_store_cell = worksheet.cell(
+                                        current_cell.row, column_number + 1).value
+                                    if at_store_cell:
+                                        if "@ STORE" not in at_store_cell.upper():
+                                            if employee_name not in current_cell.value:
+                                                store_crew.append(
+                                                    current_cell.value)
+                                    else:
+                                        if employee_name not in current_cell.value:
+                                            store_crew.append(
+                                                current_cell.value)
                                 else:
                                     break
+                                current_cell = worksheet.cell(
+                                    current_cell.row + 1, column_number)
 
                     # Create an instance of the Store_Run class
                     store_run_instance = Store_Run(
