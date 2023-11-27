@@ -2,8 +2,24 @@ fetch('schedule_data.json')
   .then((response) => response.json())
   .then((schedule) => {
     const scheduleData = document.getElementById('scheduleData');
+    const currentDate = new Date();
 
     for (const [day, runs] of Object.entries(schedule)) {
+      // Extract day, month, and year from the day string in the format 'Mon, Dec 04'
+      const [dayName, monthName, dayNumber] = day.split(' ');
+      const monthIndex = new Date(Date.parse(`${monthName} 1, 2023`)).getMonth(); // Get month index
+
+      // Create a new Date object using the extracted date information
+      const scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
+
+      // Set the time to 0:00 for proper comparison
+      scheduleDate.setHours(23, 59, 0, 0);
+
+      // Check if the scheduleDate is in the past or today
+      if (scheduleDate < currentDate) {
+        continue; // Skip generating cards for past days
+      }
+
       const dayElement = document.createElement('div');
       dayElement.classList.add('card');
       const dayHeader = document.createElement('h3');
