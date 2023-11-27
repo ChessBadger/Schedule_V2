@@ -13,7 +13,7 @@ fetch('schedule_data.json')
       const scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
 
       // Set the time to 0:00 for proper comparison
-      scheduleDate.setHours(23, 59, 0, 0);
+      scheduleDate.setHours(12, 15, 0, 0);
 
       // Check if the scheduleDate is in the past or today
       if (scheduleDate < currentDate) {
