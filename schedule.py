@@ -188,11 +188,15 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     if is_supervisor:
                         current_cell = cell
                         supervisor_cell = current_cell
+                        crew_counter = 0
                         while current_cell.row < 130:
                             current_cell = worksheet.cell(
                                 current_cell.row + 1, column_number)
                             if current_cell.value:
-                                store_crew.append(current_cell.value)
+                                crew_counter += 1
+                                employee = str(crew_counter) + ".) " + \
+                                    current_cell.value
+                                store_crew.append(employee)
                             else:
                                 break
 
@@ -227,6 +231,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Display crew if employee is driver
                     if "None" not in meet_time:
                         if is_driver and not is_supervisor:
+                            crew_counter = 0
                             while current_cell.row < 130:
                                 if current_cell.value:
                                     at_store_cell = worksheet.cell(
@@ -234,12 +239,16 @@ def process_employee(employee_name, column_number, counter, excel_file):
                                     if at_store_cell:
                                         if "@ STORE" not in at_store_cell.upper() and "DRIVER" not in at_store_cell.upper():
                                             if employee_name not in current_cell.value:
-                                                store_crew.append(
-                                                    current_cell.value)
+                                                crew_counter += 1
+                                                employee = str(crew_counter) + ".) " + \
+                                                    current_cell.value
+                                                store_crew.append(employee)
                                     else:
                                         if employee_name not in current_cell.value:
-                                            store_crew.append(
-                                                current_cell.value)
+                                            crew_counter += 1
+                                            employee = str(crew_counter) + ".) " + \
+                                                current_cell.value
+                                            store_crew.append(employee)
                                 else:
                                     break
                                 current_cell = worksheet.cell(
