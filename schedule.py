@@ -111,7 +111,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                     # Check the employee is supervisor
                     number_cell = worksheet.cell(
                         current_cell.row, current_cell.column - 1)
-                    if number_cell.value is not None and "1)" in number_cell.value:
+                    if number_cell.value is not None and number_cell.value == "1)":
                         is_supervisor = True
                         store_supervisor = worksheet.cell(
                             current_cell.row, current_cell.column).value
@@ -202,7 +202,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                         while current_cell.row > 1:
                             current_cell = worksheet.cell(
                                 current_cell.row - 1, column_number - 1)
-                            if "1)" in current_cell.value:
+                            if current_cell.value == "1)":
                                 current_cell = worksheet.cell(
                                     current_cell.row, column_number)
                                 store_supervisor = current_cell.value
