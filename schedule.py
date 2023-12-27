@@ -176,7 +176,9 @@ def process_employee(employee_name, column_number, counter, excel_file):
 
                     # Step 7: Move up one cell from the start_time and set it to the meet_time
                     if start_time:
-                        if worksheet.cell(current_cell.row - 1, column_number).value:
+                        cell_value = worksheet.cell(
+                            current_cell.row - 1, column_number).value
+                        if cell_value and re.match(r'\d{1,2}:\d{2}', cell_value.strip()):
                             meet_time = worksheet.cell(
                                 current_cell.row - 1, column_number).value
                         else:
