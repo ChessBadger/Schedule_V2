@@ -7,10 +7,17 @@ fetch('schedule_data.json')
     for (const [day, runs] of Object.entries(schedule)) {
       // Extract day, month, and year from the day string in the format 'Mon, Dec 04'
       const [dayName, monthName, dayNumber] = day.split(' ');
-      const monthIndex = new Date(Date.parse(`${monthName} 1, 2023`)).getMonth(); // Get month index
+      const monthIndex = new Date(Date.parse(`${monthName} 1, 2024`)).getMonth(); // Get month index
 
       // Create a new Date object using the extracted date information
-      const scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
+      let scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
+
+      console.log(monthName);
+
+      if (monthName == 'Jan') {
+        console.log('true');
+        scheduleDate = new Date(2024, monthIndex, parseInt(dayNumber, 10));
+      }
 
       // Set the time to 0:00 for proper comparison
       scheduleDate.setHours(23, 59, 0, 0);
