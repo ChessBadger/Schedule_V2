@@ -10,4 +10,4 @@ git add .
 git commit -m "Automated commit $(date +'%Y-%m-%d %H:%M:%S')"
 
 # Push changes to the 'main' branch of the 'origin' remote repository
-git push origin main
+git push origin g2excel
