@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory to the current script's directory
-cd "$(dirname "$0")"
+cd C:/Users/clark/OneDrive/Desktop/Schedule
 
 # Add all changes to the staging area
 git add .
