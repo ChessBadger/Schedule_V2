@@ -12,10 +12,7 @@ fetch('schedule_data.json')
       // Create a new Date object using the extracted date information
       let scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
 
-      console.log(monthName);
-
       if (monthName == 'Jan') {
-        console.log('true');
         scheduleDate = new Date(2024, monthIndex, parseInt(dayNumber, 10));
       }
 

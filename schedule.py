@@ -31,6 +31,11 @@ sunday_value = worksheet.acell('A1').value
 # Get the current year
 current_year = datetime.now().year
 
+
+if datetime.now().month == 1:
+    if "DEC" in sunday_value.upper():
+        current_year = datetime.now().year - 1
+
 # Convert the string to a datetime object with the current year
 sunday_date = datetime.strptime(
     sunday_value + f", {current_year}", '%a, %b %d, %Y')
