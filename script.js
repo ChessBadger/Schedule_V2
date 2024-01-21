@@ -9,12 +9,9 @@ fetch('schedule_data.json')
       const [dayName, monthName, dayNumber] = day.split(' ');
       const monthIndex = new Date(Date.parse(`${monthName} 1, 2024`)).getMonth(); // Get month index
 
-      // Create a new Date object using the extracted date information
-      let scheduleDate = new Date(2023, monthIndex, parseInt(dayNumber, 10));
+      const currentYear = currentDate.getFullYear();
 
-      if (monthName == 'Jan') {
-        scheduleDate = new Date(2024, monthIndex, parseInt(dayNumber, 10));
-      }
+      scheduleDate = new Date(currentYear, monthIndex, parseInt(dayNumber, 10));
 
       // Set the time to 0:00 for proper comparison
       scheduleDate.setHours(23, 59, 0, 0);
