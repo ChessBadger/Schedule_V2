@@ -5,6 +5,8 @@ import re
 import json
 import time
 import openpyxl
+import subprocess
+import os
 
 # Load credentials from a JSON file
 with open('config.json') as config_file:
@@ -127,7 +129,7 @@ def process_employee(employee_name, column_number, counter, excel_file):
                         current_cell = worksheet.cell(
                             current_cell.row - 1, column_number)
                         # Check if the content of the cell is not None and contains the word "OFFICE"
-                        if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper():
+                        if current_cell.value and "MILWAUKEE OFFICE" in current_cell.value.upper() or current_cell.value and "MADISON OFFICE" in current_cell.value.upper():
                             store_link.append(
                                 current_cell.value.replace("\n", " "))
                             store_name.append(
@@ -325,3 +327,18 @@ for sheet_name in sheet_names:
 
 # If needed, update JSON after all iterations
 update_schedule_json(schedule)
+
+# Change directory to the current script's directory
+os.chdir('C:/Users/clark/OneDrive/Desktop/Schedule')
+
+# Add all changes to the staging area
+subprocess.run(['git', 'add', '.'], check=True)
+
+# Commit changes with a message that includes the current date and time
+commit_message = subprocess.check_output(
+    ['date', '+%Y-%m-%d %H:%M:%S']).decode('utf-8').strip()
+subprocess.run(
+    ['git', 'commit', '-m', f"Automated commit {commit_message}"], check=True)
+
+# Push changes to the 'main' branch of the 'origin' remote repository
+subprocess.run(['git', 'push', 'origin', 'g2excel'], check=True)
